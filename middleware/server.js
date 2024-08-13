@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 
 const jwtSecretToken = "fx505Dt#!?rb";
 
-// mongoose.connect("",{connectTimeoutMS:50000});
+mongoose.connect("",{connectTimeoutMS:50000});
 
 const jwtUsers= mongoose.model('users',{
     email: String,
