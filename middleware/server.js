@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecretToken = "fx505Dt#!?rb";
 
 mongoose.connect("",{connectTimeoutMS:50000});
+// this is Nexxus main database API
 
 const jwtUsers= mongoose.model('users',{
     email: String,
