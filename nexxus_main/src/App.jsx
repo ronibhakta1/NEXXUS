@@ -136,7 +136,7 @@ const NexxusLogin = () => {
             marginBottom: '1.5rem',
         },
         input: {
-            width: '100%',
+            width: '93%',
             padding: '0.75rem',
             borderRadius: '4px',
             border: '2px solid #333',
@@ -213,7 +213,8 @@ const NexxusLogin = () => {
                             style={{
                                 ...styles.input,
                                 borderColor: inputFocused ? '#1d9bf0' : '#333',
-                                outline: 'none'
+                                outline: 'none',
+                                
                             }}
                             onFocus={() => setInputFocused(true)}
                             onBlur={() => setInputFocused(false)}
@@ -241,7 +242,7 @@ const NexxusLogin = () => {
                                         ...styles.input,
                                         borderColor: inputFocused ? '#1d9bf0' : '#333',
                                         outline: 'none',
-                                        paddingRight: '2.5rem'
+                                        paddingRight: '0.7rem'
                                     }}
                                     onFocus={() => setInputFocused(true)}
                                     onBlur={() => setInputFocused(false)}
@@ -258,7 +259,8 @@ const NexxusLogin = () => {
                                         background: 'none',
                                         border: 'none',
                                         color: '#1d9bf0',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                     
                                     }}
                                 >
                                     {showPassword ? 'Hide' : 'Show'}
