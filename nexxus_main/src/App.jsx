@@ -97,6 +97,18 @@ const NexxusLogin = () => {
             color: '#536471',
             textDecoration: 'none',
         },
+        global: {
+            body: {
+                margin: 0,
+                padding: 0,
+                boxSizing: 'border-box',
+            },
+            html: {
+                margin: 0,
+                padding: 0,
+                boxSizing: 'border-box',
+            },
+        },
         backdrop: {
             position: 'fixed',
             top: 0,
@@ -108,6 +120,8 @@ const NexxusLogin = () => {
             justifyContent: 'center',
             alignItems: 'center',
             zIndex: 1000,
+            margin: 0,
+            padding: 0,
         },
         popup: {
             backgroundColor: 'black',
@@ -189,6 +203,15 @@ const NexxusLogin = () => {
             zIndex: -1,
         },
     };
+    // Apply global styles
+    const applyGlobalStyles = () => {
+        Object.keys(styles.global).forEach((element) => {
+            const style = styles.global[element];
+            Object.assign(document.querySelector(element).style, style);
+        });
+    };
+
+    applyGlobalStyles();
 
     const SignInPopup = ({ onClose }) => {
         const [inputFocused, setInputFocused] = useState(false);
@@ -217,7 +240,7 @@ const NexxusLogin = () => {
                                 ...styles.input,
                                 borderColor: inputFocused ? '#1d9bf0' : '#333',
                                 outline: 'none',
-                                
+
                             }}
                             onFocus={() => setInputFocused(true)}
                             onBlur={() => setInputFocused(false)}
@@ -263,7 +286,7 @@ const NexxusLogin = () => {
                                         border: 'none',
                                         color: '#1d9bf0',
                                         cursor: 'pointer',
-                                     
+
                                     }}
                                 >
                                     {showPassword ? 'Hide' : 'Show'}
@@ -271,7 +294,7 @@ const NexxusLogin = () => {
                             </div>
                         </div>
                     )}
-                    <button 
+                    <button
                         style={styles.nextButton}
                         onClick={() => {
                             if (!showPasswordStep) {
@@ -291,7 +314,7 @@ const NexxusLogin = () => {
                         fontSize: '0.9rem',
                         color: '#888'
                     }}>
-                        Don't have an account? <a href="#" style={{color: '#1d9bf0', textDecoration: 'none'}}>Sign up</a>
+                        Don't have an account? <a href="#" style={{ color: '#1d9bf0', textDecoration: 'none' }}>Sign up</a>
                     </p>
                 </div>
             </div>
