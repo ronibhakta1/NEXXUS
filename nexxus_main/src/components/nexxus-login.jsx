@@ -11,8 +11,6 @@ const NexxusLogin = () => {
             backgroundColor: 'black',
             color: 'white',
             fontFamily: 'Arial, sans-serif',
-            position: 'relative',
-            overflow: 'hidden',
         },
         main: {
             flex: 1,
@@ -117,7 +115,7 @@ const NexxusLogin = () => {
         closeButton: {
             position: 'absolute',
             top: '1rem',
-            right: '1rem',
+            left: '1rem',
             background: 'none',
             border: 'none',
             color: 'white',
@@ -176,24 +174,10 @@ const NexxusLogin = () => {
             color: '#1d9bf0',
             textDecoration: 'none',
         },
-        backgroundImage: {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            zIndex: -1,
-        },
     };
 
     const SignInPopup = ({ onClose }) => {
         const [inputFocused, setInputFocused] = useState(false);
-        const [showPasswordStep, setShowPasswordStep] = useState(false);
-        const [username, setUsername] = useState('');
-        const [password, setPassword] = useState('');
-        const [showPassword, setShowPassword] = useState(false);
-
         return (
             <div style={styles.backdrop} onClick={onClose}>
                 <div style={styles.popup} onClick={(e) => e.stopPropagation()}>
@@ -203,90 +187,22 @@ const NexxusLogin = () => {
                             <g><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></g>
                         </svg>
                     </div>
-                    <h2 style={styles.popupTitle}>
-                        {showPasswordStep ? 'Enter your password' : 'Sign in to NEXXUS'}
-                    </h2>
-                    {!showPasswordStep ? (
-                        <input
-                            type="text"
-                            placeholder="Phone, email, or username"
-                            style={{
-                                ...styles.input,
-                                borderColor: inputFocused ? '#1d9bf0' : '#333',
-                                outline: 'none'
-                            }}
-                            onFocus={() => setInputFocused(true)}
-                            onBlur={() => setInputFocused(false)}
-                            onChange={(e) => setUsername(e.target.value)}
-                            value={username}
-                        />
-                    ) : (
-                        <div>
-                            <input
-                                type="text"
-                                value={username}
-                                disabled
-                                style={{
-                                    ...styles.input,
-                                    backgroundColor: '#333',
-                                    color: '#888',
-                                    marginBottom: '0.5rem'
-                                }}
-                            />
-                            <div style={{ position: 'relative' }}>
-                                <input
-                                    type={showPassword ? 'text' : 'password'}
-                                    placeholder="Password"
-                                    style={{
-                                        ...styles.input,
-                                        borderColor: inputFocused ? '#1d9bf0' : '#333',
-                                        outline: 'none',
-                                        paddingRight: '2.5rem'
-                                    }}
-                                    onFocus={() => setInputFocused(true)}
-                                    onBlur={() => setInputFocused(false)}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    value={password}
-                                />
-                                <button
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    style={{
-                                        position: 'absolute',
-                                        right: '0.5rem',
-                                        top: '50%',
-                                        transform: 'translateY(-50%)',
-                                        background: 'none',
-                                        border: 'none',
-                                        color: '#1d9bf0',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    {showPassword ? 'Hide' : 'Show'}
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                    <button 
-                        style={styles.nextButton}
-                        onClick={() => {
-                            if (!showPasswordStep) {
-                                setShowPasswordStep(true);
-                            } else {
-                                // Handle login logic here
-                                console.log('Logging in with:', username, password);
-                            }
+                    <h2 style={styles.popupTitle}>Sign in to NEXXUS</h2>
+                    <input
+                        type="text"
+                        placeholder="Phone, email, or username"
+                        style={{
+                            ...styles.input,
+                            borderColor: inputFocused ? '#1d9bf0' : '#333',
+                            outline: 'none'
                         }}
-                    >
-                        {showPasswordStep ? 'Log In' : 'Next'}
-                    </button>
+                        onFocus={() => setInputFocused(true)}
+                        onBlur={() => setInputFocused(false)}
+                    />
+                    <button style={styles.nextButton}>Next</button>
                     <button style={styles.forgotPassword}>Forgot password?</button>
-                    <p style={{
-                        textAlign: 'center',
-                        marginTop: '1rem',
-                        fontSize: '0.9rem',
-                        color: '#888'
-                    }}>
-                        Don't have an account? <a href="#" style={{color: '#1d9bf0', textDecoration: 'none'}}>Sign up</a>
+                    <p style={styles.signUpText}>
+                        Don't have an account? <a href="#" style={styles.signUpLink}>Sign up</a>
                     </p>
                 </div>
             </div>
@@ -295,7 +211,6 @@ const NexxusLogin = () => {
 
     return (
         <div style={styles.container}>
-            <div style={styles.backgroundImage} />
             <main style={styles.main}>
                 <div style={styles.leftHalf}>
                     <h1 style={styles.logo}>NEXXUS</h1>
@@ -331,7 +246,7 @@ const NexxusLogin = () => {
             </main>
             <footer style={styles.footer}>
                 <nav style={styles.footerNav}>
-                    {['About', 'Help Center', 'Terms of Service', 'Privacy Policy', 'Cookie Policy', 'Ads info', 'Blog', 'Status', 'Careers', 'Brand Resources', 'Advertising', 'Marketing', 'Twitter for Business', 'Developers', 'Directory', 'Settings'].map((link, index) => (
+                    {['About', 'Help Center', 'Terms of Service', 'Privacy Policy', 'Cookie Policy', 'Ads info', 'Blog', 'Status', 'Carrers', 'Brand Resources', 'Advertising', 'Marketing', 'Twitter for Business', 'Developers', 'Directory', 'Settings'].map((link, index) => (
                         <a key={index} href="#" style={styles.footerLink}>{link}</a>
                     ))}
                     <span>© 2021 Twitter, Inc.</span>
