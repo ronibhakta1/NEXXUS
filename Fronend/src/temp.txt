@@ -1,0 +1,17 @@
+    backgroundImage: {
+            position: 'flex',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            zIndex: -1,
+        },
+    };
+    // Apply global styles
+    const applyGlobalStyles = () => {
+        Object.keys(styles.global).forEach((element) => {
+            const style = styles.global[element];
+            Object.assign(document.querySelector(element).style, style);
+        });
+    };

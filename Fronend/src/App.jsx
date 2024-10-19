@@ -29,11 +29,11 @@ const NexxusLogin = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginRight: '30rem',
+            marginRight: '18rem',
         },
         logo: {
-            marginLeft: '25rem',
-            fontSize: '15rem',
+            marginLeft: '18rem',
+            fontSize: '10rem',
             fontWeight: 'bold',
             letterSpacing: '-0.05em'
         },
