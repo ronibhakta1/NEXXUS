@@ -245,7 +245,7 @@ const NexxusLogin = () => {
                             onFocus={() => setInputFocused(true)}
                             onBlur={() => setInputFocused(false)}
                             onChange={(e) => setUsername(e.target.value)}
-                            value={username}
+                            value={username} 
                         />
                     ) : (
                         <div>
