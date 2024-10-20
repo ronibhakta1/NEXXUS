@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 const NexxusLogin = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [showCreateAccountPopup, setShowCreateAccountPopup] = useState(false);
-    
+    const [showCreateAccountDetailsPopup, setShowCreateAccountDetailsPopup] = useState(false);
+
     const styles = {
         container: {
             minHeight: '100vh',
@@ -182,6 +183,30 @@ const NexxusLogin = () => {
             color: '#1d9bf0',
             textDecoration: 'none',
         },
+        dateOfBirthContainer: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginBottom: '1rem',
+        },
+        dateSelect: {
+            backgroundColor: 'black',
+            color: 'white',
+            border: '1px solid #333',
+            borderRadius: '4px',
+            padding: '0.5rem',
+        },
+        useEmailLink: {
+            color: '#1d9bf0',
+            textDecoration: 'none',
+            fontSize: '0.9rem',
+            marginBottom: '1rem',
+            display: 'block',
+        },
+        dateOfBirthText: {
+            fontSize: '0.9rem',
+            color: '#6e767d',
+            marginBottom: '0.1rem',
+        },
         backgroundImage: {
             position: 'flex',
             top: 0,
@@ -340,17 +365,22 @@ const NexxusLogin = () => {
                         Sign up with Google
                     </button>
                     <div style={{textAlign: 'center', margin: '1rem 0'}}>or</div>
-                    <button style={styles.nextButton}>
+                    <button 
+                        style={styles.nextButton}
+                        onClick={() => {
+                            onClose();
+                            setShowCreateAccountDetailsPopup(true);
+                        }}
+                    >
                         Create account
                     </button>
                     <p style={styles.termsText}>
                         By signing up, you agree to the <a href="#" style={styles.signUpLink}>Terms of Service</a> and <a href="#" style={styles.signUpLink}>Privacy Policy</a>, including <a href="#" style={styles.signUpLink}>Cookie Use</a>.
                     </p>
                     <p style={styles.signUpText}>
-                        Have an account already? <a href="#" style={styles.signUpLink} onClick={() => {
+                        Have an account already? <a href="#"   style={styles.signUpLink} onClick={() => {
                             onClose();
-                            setShowPopup(true);
-                            
+                            setShowPopup(true)
                         }}>Log in</a>
                     </p>
                 </div>
@@ -358,6 +388,92 @@ const NexxusLogin = () => {
         );
     };
 
+    const CreateAccountDetailsPopup = ({ onClose }) => {
+        const [name, setName] = useState('');
+        const [phone, setPhone] = useState('');
+        const [useEmail, setUseEmail] = useState(false);
+        const [month, setMonth] = useState('');
+        const [day, setDay] = useState('');
+        const [year, setYear] = useState('');
+
+        return (
+            <div style={styles.backdrop} onClick={onClose}>
+                <div style={styles.popup} onClick={(e) => e.stopPropagation()}>
+                    <button style={styles.closeButton} onClick={onClose}>×</button>
+                    <div style={styles.popupLogo}>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="white">
+                            <g><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></g>
+                        </svg>
+                    </div>
+                    <h2 style={styles.popupTitle}>Create your account</h2>
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        style={styles.input}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <input
+                        type={useEmail ? "email" : "tel"}
+                        placeholder={useEmail ? "Email" : "Phone"}
+                        style={styles.input}
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                    />
+                    <a 
+                        href="#" 
+                        style={styles.useEmailLink}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setUseEmail(!useEmail);
+                            setPhone('+91');
+                        }}
+                    >
+                        {useEmail ? "Use phone instead" : "Use email instead"}
+                    </a>
+                    <p style={styles.dateOfBirthText}>Date of Birth</p>
+                    <p style={{...styles.dateOfBirthText, marginBottom: '1rem'}}>
+                        This will not be shown publicly. Confirm your own age, even if this account is for a business, a pet, or something else.
+                    </p>
+                    <div style={styles.dateOfBirthContainer}>
+                        <select 
+                            style={{...styles.dateSelect, width: '45%'}} 
+                            value={month}
+                            onChange={(e) => setMonth(e.target.value)}
+                        >
+                            <option value="">Month</option>
+                            {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((m, index) => (
+                                <option key={index} value={m}>{m}</option>
+                            ))}
+                        </select>
+                        <select 
+                            style={{...styles.dateSelect, width: '25%'}} 
+                            value={day}
+                            onChange={(e) => setDay(e.target.value)}
+                        >
+                            <option value="">Day</option>
+                            {Array.from({length: 31}, (_, i) => i + 1).map(d => (
+                                <option key={d} value={d}>{d}</option>
+                            ))}
+                        </select>
+                        <select 
+                            style={{...styles.dateSelect, width: '25%'}} 
+                            value={year}
+                            onChange={(e) => setYear(e.target.value)}
+                        >
+                            <option value="">Year</option>
+                            {Array.from({length: 100}, (_, i) => new Date().getFullYear() - i).map(y => (
+                                <option key={y} value={y}>{y}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <button style={styles.nextButton}>
+                        Next
+                    </button>
+                </div>
+            </div>
+        );
+    };
     return (
         <div style={styles.container}>
             <div style={styles.backgroundImage} />
@@ -407,6 +523,7 @@ const NexxusLogin = () => {
             </footer>
             {showPopup && <SignInPopup onClose={() => setShowPopup(false)} />}
             {showCreateAccountPopup && <CreateAccountPopup onClose={() => setShowCreateAccountPopup(false)} />}
+            {showCreateAccountDetailsPopup && <CreateAccountDetailsPopup onClose={() => setShowCreateAccountDetailsPopup(false)} />}
         </div>
     );
 };
