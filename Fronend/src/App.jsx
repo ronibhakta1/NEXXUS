@@ -395,7 +395,18 @@ const NexxusLogin = () => {
         const [month, setMonth] = useState('');
         const [day, setDay] = useState('');
         const [year, setYear] = useState('');
+        const [phoneError, setPhoneError] = useState(null);
 
+        const handlePhoneChange = (e) => {
+            const phoneRegex = /^\d{10}$/; // 10 digit Indian phone number
+            if (phoneRegex.test(e.target.value)) {
+                setPhoneError(null);
+            } else {
+                setPhoneError('Please enter a valid 10-digit Indian phone number');
+            }
+            setPhone(e.target.value);
+        };
+    
         return (
             <div style={styles.backdrop} onClick={onClose}>
                 <div style={styles.popup} onClick={(e) => e.stopPropagation()}>
@@ -414,19 +425,22 @@ const NexxusLogin = () => {
                         onChange={(e) => setName(e.target.value)}
                     />
                     <input
-                        type={useEmail ? "email" : "tel"}
-                        placeholder={useEmail ? "Email" : "Phone"}
-                        style={styles.input}
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                      type={useEmail ? 'email' : 'tel'}
+                      placeholder={useEmail ? 'example@gmail.com' : 'Phone (10-digit Indian number)'}
+                      style={styles.input}
+                      value={phone}
+                      onChange={handlePhoneChange}
                     />
+                  
+                    {phoneError && (
+                        <p style={{ color: 'red', fontSize: '12px' }}>{phoneError}</p>
+                    )}
                     <a 
                         href="#" 
                         style={styles.useEmailLink}
                         onClick={(e) => {
                             e.preventDefault();
                             setUseEmail(!useEmail);
-                            setPhone('+91');
                         }}
                     >
                         {useEmail ? "Use phone instead" : "Use email instead"}
