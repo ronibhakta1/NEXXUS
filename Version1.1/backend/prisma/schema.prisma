@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int        @id @default(autoincrement()) // Primary identifier as auto-incremented integer
+  email    String  @unique
+  username String  @unique
+  phone    String? @unique
+  name     String?
+  password String
+  echos    echo[]
+}
+
+model echo {
+  id       Int      @id @default(autoincrement()) // Primary identifier as auto-incremented integer
+  username   String  // User handle, e.g., @username
+  time     DateTime // Timestamp of the post
+  content  String // Content of the post
+  comments Int      @default(0) // Number of comments on the post
+  retweets Int      @default(0) // Number of retweets/shares of the post
+  likes    Int      @default(0) // Number of likes on the post
+  avatar   String? // URL to the user's avatar or profile image
+  verified Boolean  @default(false) // Verification status of the user
+  image   String?  @default("") // URL to the post image
+
+  // Relation fields
+  user     User   @relation(fields: [authorId], references: [id]) // Relation to User model
+  authorId Int    // Foreign key linking to User's id
+}
