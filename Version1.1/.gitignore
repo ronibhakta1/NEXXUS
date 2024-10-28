@@ -32,5 +32,3 @@ lerna-debug.log*
 # misc
 .DS_Store
 
-#toml Wrangler file configuration 
-.toml
