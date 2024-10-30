@@ -61,7 +61,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
 
             </div>
             <div className="relative">
-                <LabelledInput label="Password" type={ "text"} placeholder="@#!&dsa231" onChange={(e) => {
+                <LabelledInput label="Password" type={ "Password"} placeholder="@#!&dsa231" onChange={(e) => {
                     serPostInputs({
                         ...postInputs,
                         password: e.target.value
