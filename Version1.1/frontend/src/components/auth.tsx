@@ -68,7 +68,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
                         password: e.target.value
                     })
                 }} />
-                <button type="button" className="absolute inset-y-0 right-0 pr-3 pt-8 pr-14 font-bold flex items-center text-sm leading-5" onClick={() => setShowPassword(!showPassword)}>
+                <button type="button" className="absolute inset-y-0 right-0 pr-3 pt-8 pr-20 font-bold flex items-center text-sm leading-5" onClick={() => setShowPassword(!showPassword)}>
                     {showPassword ? "Hide" : "Show"}
                 </button>
             </div>
@@ -80,31 +80,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
                     })
                 }} /> : null}
             </div>
-            {/* <div>
-                {type === "signup" ? (
-                    <div className="mb-4">
-                        <label className="block mb-2 text-base font-medium text-gray-900 dark:text-white" htmlFor="file_input">Upload file</label>
-                        <input 
-                            className="w-11/12 text-sm h-10 text-gray-900 border flex justify-center p-1.5 border-gray-300 rounded-md cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" 
-                            id="file_input" 
-                            type="file" 
-                            onChange={(e) => {
-                                const file = e.target.files ? e.target.files[0] : null;
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onloadend = () => {
-                                        serPostInputs({
-                                            ...postInputs,
-                                            avatar: reader.result as string
-                                        });
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            }}
-                        />
-                    </div>
-                ) : null}
-            </div> */}
+            
         
         </div>
         <div className="flex justify-center">
