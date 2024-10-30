@@ -21,8 +21,8 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
             navigate('/nexxus');
         } catch (e) {
             alert("Something went wrong");
-            { type === "signin" ? navigate('/nexxushome') : null }
-            { type === "signup" ? navigate('/nexxushome') : null }
+            { type === "signin" ? navigate('/') : null }
+            { type === "signup" ? navigate('/') : null }
 
         }
     }
