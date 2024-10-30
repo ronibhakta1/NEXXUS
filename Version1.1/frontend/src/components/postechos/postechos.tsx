@@ -6,29 +6,31 @@ import { CreateEcho } from "@ronibhakta/nexxus-common"
 
 
 export const PostEchos = () => {
+    const navigate = useNavigate();
+
     const [echos, setEchos] = useState<CreateEcho>({
         content: ''
     });
     async function sendRequest() {
         try {
-            const response = await axios.post(`${BACKEND_URL}/api/v1/echo`,
-                echos, {
+            const response = await axios.post(`${BACKEND_URL}/api/v1/echo`,{
+                echos
+            }, {
                 headers: {
                     authorization: localStorage.getItem('token')
                 }
             });
-            if(response.status === 200){
+            if(response.status === 201){
                 alert("Echo created successfully");
-                window.location.reload();
+                navigate('/nexxus');
             }
-            
         } catch (e) {
+            console.error(e);
             alert("Something went wrong");
             navigate('/nexxus')
         }
-
     }
-    const navigate = useNavigate();
+    
     return <div className="border-b border-gray-800 p-4 ">
         <div className="flex">
             {<img src={'https://media.licdn.com/dms/image/v2/D4D03AQEvEHK2KOMLwQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1705087348506?e=1735776000&v=beta&t=r3U2Inqk6qyq18y_rCXFlnuoxD4CRcMrJHPFOx2O5oE'} alt="User" className="w-12 h-12 rounded-full mr-3" />}

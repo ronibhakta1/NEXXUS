@@ -1,3 +1,7 @@
+// Assuming useEcho is defined to return loading and an array of Echo objects
+import { useEcho } from "../../hooks";
+import { EchoLoader } from "../loader/echoloader";
+import { EchoCards } from "./echocards";
 // Define the Echo type for correct TypeScript inference
 type Echo = {
     id: number;
@@ -15,10 +19,6 @@ type Echo = {
     verified?: boolean;
 };
 
-// Assuming useEcho is defined to return loading and an array of Echo objects
-import { useEcho } from "../../hooks";
-import { EchoLoader } from "../loader/echoloader";
-import { EchoCards } from "./echocards";
 
 export const Echos = () => {
     // Ensure TypeScript correctly infers loading as boolean and echos as Echo[]

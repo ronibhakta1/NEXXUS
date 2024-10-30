@@ -74,7 +74,7 @@ echoRouter.post("/", async (c) => {
             username: username as string,
             time: new Date(),
         },
-    });
+    }); 
     // console.log('Created echo:', echo);
     return c.json({
         id: echo.id,
