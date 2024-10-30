@@ -6,6 +6,7 @@ import { BACKEND_URL } from "../pages/config"
 
 export const Auth = ({ type }: { type: "signin" | "signup" }) => {
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
     const [postInputs, serPostInputs] = useState<SignupInput>({
         username: '',
         name: '',
@@ -60,13 +61,16 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
                 }} />
 
             </div>
-            <div>
-                <LabelledInput label="Password" type={"password"} placeholder="@#!&dsa231" onChange={(e) => {
+            <div className="relative">
+                <LabelledInput label="Password" type={showPassword ? "text" : "password"} placeholder="@#!&dsa231" onChange={(e) => {
                     serPostInputs({
                         ...postInputs,
                         password: e.target.value
                     })
                 }} />
+                <button type="button" className="absolute inset-y-0 right-0 pr-3 pt-8 pr-14 font-bold flex items-center text-sm leading-5" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? "Hide" : "Show"}
+                </button>
             </div>
             <div>
                 {type === "signup" ? <LabelledInput label="Phone" placeholder="1234567890" onChange={(e) => {
