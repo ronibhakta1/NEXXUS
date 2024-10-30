@@ -12,7 +12,7 @@ interface echoProps {
     image?: string | null;
     avatar: string;
     verified: boolean;
-    datee?: Date;
+    todaydate?: string;
 }
 
 
@@ -26,9 +26,8 @@ export const EchoCards = ({
     retweets,
     likes,
     image,
-    avatar,
     verified,
-    datee
+    todaydate
 
 }: echoProps) => {
     return (<div>
@@ -40,7 +39,7 @@ export const EchoCards = ({
                     <div>
                         <span className="font-bold">{user}</span>
                         {verified && <span className="text-blue-400 ml-1">✓</span>}
-                        <span className="text-gray-500 ml-1"> @{username} · {time} · {datee?.toLocaleString()}</span>
+                        <span className="text-gray-500 ml-1"> @{username} · {time} · {todaydate?.toLocaleString()}</span>
                     </div>
                 </div>
                 <p className="mb-3">{content}</p>
@@ -57,7 +56,7 @@ export const EchoCards = ({
     )
 }
 function Avatar({ name }: { name: string }) {
-    return < div className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden w-12 h-12 rounded-full mr-3 bg-gray-100 rounded-fulldark:bg-gray-600">
+    return < div className="relative inline-flex items-center justify-center w-12 h-12 overflow-hidden rounded-full mr-3 bg-gray-100 rounded-fulldark:bg-gray-600">
 <span className="font-medium text-3xl text-gray-600 dark:text-black">{name[0]}</ span>
 </div >
 }
