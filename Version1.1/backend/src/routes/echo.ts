@@ -2,89 +2,92 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
 import { decode, verify } from "hono/jwt";
-import { createEcho, updateEcho} from "@ronibhakta/nexxus-common";
-import { UNABLE_TO_FIND_POSTINSTALL_TRIGGER_JSON_SCHEMA_ERROR } from "@prisma/client/scripts/postinstall.js";
+import { createEcho, updateEcho } from "@ronibhakta/nexxus-common";
 
 export const echoRouter = new Hono<{
-	Bindings: {
-		DATABASE_URL: string;
-		JWT_SECRET: string;
-	},
+    Bindings: {
+        DATABASE_URL: string;
+        JWT_SECRET: string;
+    };
     Variables: {
         userId: string;
-    }
+    };
 }>();
-echoRouter.use("/*",async (c, next)=>{
+echoRouter.use("/*", async (c, next) => {
     //extract the user id
-    //pass it down to the route handler 
+    //pass it down to the route handler
     const authHeader = c.req.header("Authorization") || "";
-    try{
-        const user = await verify(authHeader,c.env.JWT_SECRET);
-    if(user){
-        c.set("userId", String(user.id));
-        await next();
-    }else{
+    try {
+        const user = await verify(authHeader, c.env.JWT_SECRET);
+        // console.log(user);
+        if (user) {
+            c.set("userId", String(user.id));
+            await next();
+        } else {
+            c.status(401);
+            return c.json({
+                alert: "You are not logged in",
+            });
+        }
+    } catch (e) {
         return c.json({
-            message:"You are not logged in"
+            alert: "You are not logged in",
         });
     }
-    }catch(e){
-        return c.json({
-            message:"You are not logged in"
-        });
-    }
-    
 });
-// app.get('/api/v1/echo/:id', (c) => {
-// 	const id = c.req.param('id')
-// 	console.log(id);
-// 	return c.text('get echo route')
-// })
 
-echoRouter.post("/",async (c) => {
+echoRouter.post("/", async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const body = await c.req.json();
+    try {
+        const authHeader = c.req.header("Authorization") || "";
+    const { payload } = decode(authHeader);
 
-    const { username } = await c.req.json();
+    const username = payload.username;
+    console.log("Decoded Payload:", username as string);
     const validusername = await prisma.user.findUnique({
-        where: { username: username },
+        where: { username: username as string },
     });
     // console.log(validusername);
     if (!validusername) {
         c.status(400);
         return c.json({
-            msg: "Invalid handle. Please provide a valid handle to post an echo.",
+            alert: "Invalid handle. Please provide a valid handle to post an echo.",
         });
-    } 
+    }
     // console.log(body);
     const { success } = createEcho.safeParse(body);
-    console.log(success);
+    // console.log(success);
     if (!success) {
         c.status(400);
         return c.json({
-            msg: "Incorrect input try filling all the fields correctly post a echo",
+            alert: "Incorrect input try filling all the fields correctly post a echo",
         });
     }
-
     const userId = c.get("userId");
-	const echo = await prisma.echo.create({
-		data: {
-			content: body.content,
-			authorId: Number(userId),
-			username: body.username,
-			time: new Date(),
-		}
-	})
+    const echo = await prisma.echo.create({
+        data: {
+            content: body.content,
+            authorId: Number(userId),
+            username: username as string,
+            time: new Date(),
+        },
+    });
     // console.log('Created echo:', echo);
     return c.json({
         id: echo.id,
         content: echo.content,
-    })
+    });
+    } catch (error) {
+        
+    }
+    
+
 });
 
-echoRouter.put("/", async(c) => {
+echoRouter.put("/", async (c) => {
     const body = await c.req.json();
     const { success } = updateEcho.safeParse(body);
     if (!success) {
@@ -93,61 +96,75 @@ echoRouter.put("/", async(c) => {
             msg: "Incorrect input try filling all the fields correctly to update the echo",
         });
     }
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env.DATABASE_URL,
-	}).$extends(withAccelerate());
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
 
-	const echo = await prisma.echo.update({
+    const echo = await prisma.echo.update({
         where: {
             id: body.id,
-            username: body.username
+            username: body.username,
         },
-		data: {
-			content: body.content,
-			authorId: body.authorId,
-			time: new Date(),
-		}
-	})
+        data: {
+            content: body.content,
+            authorId: body.authorId,
+            time: new Date(),
+        },
+    });
 
-	return c.json({
-        id: echo.id
-    })
+    return c.json({
+        id: echo.id,
+    });
 });
 
 //todo : add pagination
 echoRouter.get("/bulkecho", async (c) => {
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env.DATABASE_URL,
-	}).$extends(withAccelerate());
-    const echos = await prisma.echo.findMany();
-    return c.json({echos});
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+    const echos = await prisma.echo.findMany({
+        select: {
+            id: true,
+            content: true,
+            authorId: true,
+            username: true,
+            time: true,
+            comments: true,
+            retweets: true,
+            likes: true,
+            image: true,
+            avatar: true,
+            verified: true,
+            user: true,
+        },
+        orderBy: {
+            time: 'desc',
+        },
+    });
+    return c.json({ echos });
 });
 
 echoRouter.get("/:username/:id", async (c) => {
     const { username, id } = c.req.param();
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env.DATABASE_URL,
-	}).$extends(withAccelerate());
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
 
-    try{
-        const echo = await prisma.echo.findFirst({    
+    try {
+        const echo = await prisma.echo.findFirst({
             where: {
                 id: Number(id),
-                username: username
+                username: username,
             },
-        })
-    
+        });
+
         return c.json({
-                echo
-        })
-    } catch(e) {
+            echo,
+        });
+    } catch (e) {
         c.status(411);
         return c.json({
-            message:"Error while fetching echo post"
-    })
+            message: "Error while fetching echo post",
+        });
     }
-	
 });
-
-
-

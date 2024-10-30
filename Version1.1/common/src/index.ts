@@ -16,7 +16,6 @@ export const signinInput = z.object({
 
 export const createEcho = z.object({
     content: z.string(),
-    username: z.string(),
 })
 export const updateEcho = z.object({
     content: z.string(),

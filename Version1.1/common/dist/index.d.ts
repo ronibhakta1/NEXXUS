@@ -33,12 +33,9 @@ export declare const signinInput: z.ZodObject<{
 }>;
 export declare const createEcho: z.ZodObject<{
     content: z.ZodString;
-    username: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    username: string;
     content: string;
 }, {
-    username: string;
     content: string;
 }>;
 export declare const updateEcho: z.ZodObject<{

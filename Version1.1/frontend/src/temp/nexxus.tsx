@@ -1,10 +1,45 @@
 import React, { useState, useEffect } from 'react';
 
 const Nexxus = () => {
-    const [currentUser, setCurrentUser] = useState(null);
-    const [tweets, setTweets] = useState([]);
-    const [trends, setTrends] = useState([]);
-    const [whoToFollow, setWhoToFollow] = useState([]);
+    interface CurrentUser {
+        name: string;
+        handle: string;
+        avatar: string;
+    }
+
+    const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+    interface Tweet {
+        id: number;
+        user: string;
+        handle: string;
+        time: string;
+        content: string;
+        comments: number | string;
+        retweets: number | string;
+        likes: number | string;
+        image?: string;
+        avatar: string;
+        verified: boolean;
+    }
+
+    const [tweets, setTweets] = useState<Tweet[]>([]);
+    interface Trend {
+        id: number;
+        location: string;
+        hashtag: string;
+        tweets: string;
+    }
+
+    const [trends, setTrends] = useState<Trend[]>([]);
+    interface User {
+        id: number;
+        name: string;
+        handle: string;
+        avatar: string;
+        verified: boolean;
+    }
+    
+    const [whoToFollow, setWhoToFollow] = useState<User[]>([]);
     const [newTweet, setNewTweet] = useState('');
 
     useEffect(() => {
@@ -134,7 +169,7 @@ const Nexxus = () => {
         }, 1000);
     };
 
-    const handleNewTweet = (e) => {
+    const handleNewTweet = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewTweet(e.target.value);
     };
 

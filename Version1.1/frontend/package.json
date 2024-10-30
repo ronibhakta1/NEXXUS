@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ronibhakta/nexxus-common": "^1.0.3",
+    "@ronibhakta/nexxus-common": "^1.0.7",
+    "axios": "^1.7.7",
+    "lucide-react": "^0.454.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0"

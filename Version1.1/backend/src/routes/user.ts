@@ -32,11 +32,15 @@ userRouter.post("/signup", async (c) => {
 				phone: body.phone,
 				name: body.name,
 				password: body.password,
+				
 			},
 		});
 		const jwt = await sign(
 			{
 				id: user.id,
+				username: user.username,
+				name: user.name,
+				email: user.email
 			},
 			c.env.JWT_SECRET
 		);
@@ -87,4 +91,14 @@ userRouter.post("/signin", async (c) => {
 		c.status(411);
 		return c.text("Invaild data");
 	}
+});
+
+userRouter.post("/logout", async (c) => {
+	// Invalidate the JWT token here if you have a mechanism to do so
+	// For example, you could maintain a blacklist of tokens in your database
+	// Here we are just simulating the logout process
+	localStorage.removeItem('token');
+	c.status(200);
+	return c.text("Logout successful");
+	
 });

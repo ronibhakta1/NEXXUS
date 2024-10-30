@@ -19,7 +19,6 @@ exports.signinInput = zod_1.default.object({
 });
 exports.createEcho = zod_1.default.object({
     content: zod_1.default.string(),
-    username: zod_1.default.string(),
 });
 exports.updateEcho = zod_1.default.object({
     content: zod_1.default.string(),
