@@ -36,55 +36,106 @@ echoRouter.use("/*", async (c, next) => {
     }
 });
 
+// echoRouter.post("/", async (c) => {
+//     const prisma = new PrismaClient({
+//         datasourceUrl: c.env.DATABASE_URL,
+//     }).$extends(withAccelerate());
+//     const body = await c.req.json();
+//     try {
+//         const authHeader = c.req.header("Authorization") || "";
+//     const { payload } = decode(authHeader);
+
+//     const username = payload.username;
+//     console.log("Decoded Payload:", username as string);
+//     const validusername = await prisma.user.findUnique({
+//         where: { username: username as string },
+//     });
+//     // console.log(validusername);
+//     if (!validusername) {
+//         c.status(400);
+//         return c.json({
+//             alert: "Invalid handle. Please provide a valid handle to post an echo.",
+//         });
+//     }
+//     // console.log(body);
+//     const { success } = createEcho.safeParse(body);
+//     // console.log(success);
+//     if (!success) {
+//         c.status(400);
+//         return c.json({
+//             alert: "Incorrect input try filling all the fields correctly post a echo",
+//         });
+//     }
+//     const userId = c.get("userId");
+//     const echo = await prisma.echo.create({
+//         data: {
+//             content: body.content,
+//             authorId: Number(userId),
+//             username: username as string,
+//             time: new Date(),
+//         },
+//     });
+//     // console.log('Created echo:', echo);
+//     return c.json({
+//         id: echo.id,
+//         content: echo.content,
+//     });
+//     } catch (error) {
+
+//     }
+
+
+// });
+
 echoRouter.post("/", async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const body = await c.req.json();
     try {
-        const authHeader = c.req.header("Authorization") || "";
-    const { payload } = decode(authHeader);
-
-    const username = payload.username;
-    console.log("Decoded Payload:", username as string);
-    const validusername = await prisma.user.findUnique({
-        where: { username: username as string },
-    });
-    // console.log(validusername);
-    if (!validusername) {
-        c.status(400);
-        return c.json({
-            alert: "Invalid handle. Please provide a valid handle to post an echo.",
+        const userId = c.get("userId");
+        const username = await prisma.user.findUnique({
+            where: { id: Number(userId) },
         });
-    }
-    // console.log(body);
-    const { success } = createEcho.safeParse(body);
-    // console.log(success);
-    if (!success) {
-        c.status(400);
-        return c.json({
-            alert: "Incorrect input try filling all the fields correctly post a echo",
+        console.log("Decoded Payload:", username?.username as string);
+        const validusername = await prisma.user.findUnique({
+            where: { username: username?.username as string },
         });
-    }
-    const userId = c.get("userId");
-    const echo = await prisma.echo.create({
-        data: {
-            content: body.content,
-            authorId: Number(userId),
-            username: username as string,
-            time: new Date(),
-        },
-    }); 
-    // console.log('Created echo:', echo);
-    return c.json({
-        id: echo.id,
-        content: echo.content,
-    });
+        // console.log(validusername);
+        if (!validusername) {
+            c.status(400);
+            return c.json({
+                alert: "Invalid handle. Please provide a valid handle to post an echo.",
+            });
+        }
+        // console.log(body);
+        const { success } = createEcho.safeParse(body);
+        // console.log(success);
+        if (!success) {
+            c.status(400);
+            return c.json({
+                alert: "Incorrect input try filling all the fields correctly post a echo",
+            });
+        }
+        const echo = await prisma.echo.create({
+            data: {
+                content: body.content,
+                authorId: Number(userId),
+                username: username?.username as string,
+                time: new Date(),
+            },
+        });
+        // console.log('Created echo:', echo);
+        return c.json({
+            id: echo.id,
+            content: echo.content,
+        });
     } catch (error) {
-        
+        c.status(500);
+        return c.json({
+            alert: "Internal Server Error",
+        });
     }
-    
-
 });
 
 echoRouter.put("/", async (c) => {

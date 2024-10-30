@@ -7,15 +7,14 @@ import { CreateEcho } from "@ronibhakta/nexxus-common"
 
 export const PostEchos = () => {
     const navigate = useNavigate();
-
     const [echos, setEchos] = useState<CreateEcho>({
         content: ''
     });
     async function sendRequest() {
         try {
-            const response = await axios.post(`${BACKEND_URL}/api/v1/echo`,{
+            const response = await axios.post(`${BACKEND_URL}/api/v1/echo`,
                 echos
-            }, {
+            , {
                 headers: {
                     authorization: localStorage.getItem('token')
                 }
@@ -25,7 +24,7 @@ export const PostEchos = () => {
                 navigate('/nexxus');
             }
         } catch (e) {
-            console.error(e);
+            console.log(e);
             alert("Something went wrong");
             navigate('/nexxus')
         }

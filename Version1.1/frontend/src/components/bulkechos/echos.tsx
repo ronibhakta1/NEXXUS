@@ -58,7 +58,10 @@ export const Echos = () => {
                         comments={echo.comments}
                         retweets={echo.retweets}
                         likes={echo.likes}
-                        image={echo.image} avatar={""} verified={false}                        // avatar={echo.avatar}
+                        image={echo.image} 
+                        avatar={""} 
+                        verified={false}                       
+                        // avatar={echo.avatar}
                         // verified={echo.verified}
                     />
                 );
