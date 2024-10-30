@@ -19,9 +19,9 @@ export const PostEchos = () => {
                     authorization: localStorage.getItem('token')
                 }
             });
-            if(response.status === 201){
+            if(response.status === 200){
                 alert("Echo created successfully");
-                navigate('/nexxus');
+                window.location.reload();
             }
         } catch (e) {
             console.log(e);
