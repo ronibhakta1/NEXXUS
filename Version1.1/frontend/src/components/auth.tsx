@@ -6,7 +6,6 @@ import { BACKEND_URL } from "../pages/config"
 
 export const Auth = ({ type }: { type: "signin" | "signup" }) => {
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
     const [postInputs, serPostInputs] = useState<SignupInput>({
         username: '',
         name: '',
@@ -62,15 +61,13 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
 
             </div>
             <div className="relative">
-                <LabelledInput label="Password" type={showPassword ? "text" : "password"} placeholder="@#!&dsa231" onChange={(e) => {
+                <LabelledInput label="Password" type={ "text"} placeholder="@#!&dsa231" onChange={(e) => {
                     serPostInputs({
                         ...postInputs,
                         password: e.target.value
                     })
                 }} />
-                <button type="button" className="absolute inset-y-0 right-0 pr-3 pt-8 pr-20 font-bold flex items-center text-sm leading-5" onClick={() => setShowPassword(!showPassword)}>
-                    {showPassword ? "Hide" : "Show"}
-                </button>
+                
             </div>
             <div>
                 {type === "signup" ? <LabelledInput label="Phone" placeholder="1234567890" onChange={(e) => {
@@ -87,6 +84,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
             <button onClick={sendRequest} className="w-8/12 bg-[#1d9bf0] hover:bg-[#1a8cd8] text-white mb-4 py-2 px-4 rounded-full font-bold text-center">
                 {type === "signin" ? "Sign in" : "Sign up"}
             </button>
+            
         </div>
 
 
@@ -99,6 +97,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
     </div>
 }
 
+
 interface LabelledInputType {
     label: string;
     placeholder: string;
@@ -110,4 +109,5 @@ const LabelledInput = ({ label, placeholder, onChange, type }: LabelledInputType
         <label className="text-1xl block mb-2  font-medium text-gray-900 dark:text-white">{label}</label>
         <input onChange={onChange} type={type || "text"} id="first_name" className="  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-11/12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={placeholder} required />
     </div>
+    
 }
