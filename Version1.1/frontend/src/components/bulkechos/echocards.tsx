@@ -1,4 +1,5 @@
-import { MessageCircle, Repeat, Heart, Share2 } from 'lucide-react'
+import { toast } from '@/hooks/use-toast';
+import { MessageCircle, Repeat, Heart, Share2, BadgeCheck } from 'lucide-react'
 
 interface echoProps {
     id: number;
@@ -26,10 +27,25 @@ export const EchoCards = ({
     retweets,
     likes,
     image,
-    verified,
+    verified ,
     todaydate
 
 }: echoProps) => {
+    function toastloader(){
+        const showToast = localStorage.getItem('showToast');
+            const toastContent = localStorage.getItem('toastContent');
+            if (showToast === 'true' && toastContent) {
+                toast({
+                    title: "Echoed",
+                    description: toastContent,
+                });
+                // Remove the flag and content from local storage
+                localStorage.removeItem('showToast');
+                localStorage.removeItem('toastContent');
+            }
+    }
+    
+        toastloader()
     return (<div>
         <div className="overflow-y-auto">
             <div key={id} className="p-4 border-b border-gray-800">
@@ -38,7 +54,7 @@ export const EchoCards = ({
                     <Avatar name={user}  />
                     <div>
                         <span className="font-bold">{user}</span>
-                        {verified && <span className="text-blue-400 ml-1">✓</span>}
+                        {verified && <span className="text-blue-400 ml-1"><BadgeCheck/></span>}
                         <span className="text-gray-500 ml-1"> @{username} · {time} · {todaydate?.toLocaleString()}</span>
                     </div>
                 </div>

@@ -5,6 +5,9 @@ import { PostEchos } from '../../components/postechos/postechos'
 import { Leftsidebar } from '../../components/leftsidebar/leftsidebar'
 import { RightSidebar } from '../../components/rightsidebar/rightsidebar'
 import { RightDownProfileUser } from '../../components/rightdowncorner/rightdownuser'
+import { Toaster } from "@/components/ui/toaster"
+
+
 
 
 export const  Nexxus =() => {
@@ -22,9 +25,8 @@ export const  Nexxus =() => {
                         <h2 className="text-xl font-bold">Home</h2>
                         <Star className="text-gray-500" />
                     </div>
-                    <PostEchos />
-                    {/* <EchoLoader /> */}
-                    <Echos />
+                        <PostEchos />
+                        <Echos />
                 </div>
 
                 {/* Right Sidebar */}
@@ -36,6 +38,7 @@ export const  Nexxus =() => {
             <RightDownProfileUser />
             
         </div>
+        <Toaster />
     </div>
 }
     

@@ -22,6 +22,7 @@ type Echo = {
 
 export const Echos = () => {
     // Ensure TypeScript correctly infers loading as boolean and echos as Echo[]
+    // userEcho is from the useEcho hook
     const { loading, echos } = useEcho() as { loading: boolean; echos: Echo[] };
 
     if (loading) {

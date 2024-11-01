@@ -38,4 +38,18 @@ model echo {
   // Relation fields
   user     User   @relation(fields: [authorId], references: [id]) // Relation to User model
   authorId Int    // Foreign key linking to User's id
+  flagData echoContentFlagdata? // Relation to echoContentFlagdata model
+
+  // Relation fields
+}
+
+model echoContentFlagdata{
+
+    id          Int      @id @default(autoincrement()) // Primary identifier as auto-incremented integer
+    echoId      Int      @unique // Foreign key linking to Echo's id
+    sentiment   String   // Sentiment flag: 'neg', 'pos', 'neutral'
+    extraData   Json?    // Additional data for sentiment analysis
+    // Relation fields
+    echo        echo     @relation(fields: [echoId], references: [id]) // Relation to Echo model
+
 }
