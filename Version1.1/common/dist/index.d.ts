@@ -19,17 +19,17 @@ export declare const signupInput: z.ZodObject<{
     phone?: string | undefined;
 }>;
 export declare const signinInput: z.ZodObject<{
-    username: z.ZodString;
+    username: z.ZodOptional<z.ZodString>;
     email: z.ZodString;
     password: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    username: string;
     password: string;
     email: string;
+    username?: string | undefined;
 }, {
-    username: string;
     password: string;
     email: string;
+    username?: string | undefined;
 }>;
 export declare const createEcho: z.ZodObject<{
     content: z.ZodString;

@@ -12,6 +12,7 @@ const app = new Hono<{
 app.use('/*', cors())
 app.route("/api/v1/user", userRouter);
 app.route("/api/v1/echo", echoRouter);
+// app.route("/api/v1/echo/bulkecho", echoRouter);
 
 export default app;
 //DIRECT_URL="<YOUR_DATABASE_CONNECTION_STRING>"

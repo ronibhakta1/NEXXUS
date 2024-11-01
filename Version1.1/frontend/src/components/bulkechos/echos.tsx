@@ -1,34 +1,32 @@
-// Assuming useEcho is defined to return loading and an array of Echo objects
 import { useEcho } from "../../hooks";
 import { EchoLoader } from "../loader/echoloader";
 import { EchoCards } from "./echocards";
+
 // Define the Echo type for correct TypeScript inference
 type Echo = {
     id: number;
-    user: {
-        name: string;
-    };
+    content: string;
+    authorId: number;
+    name: string;
     username: string;
     time: string;
-    content: string;
-    comments: number;
-    retweets: number;
-    likes: number;
+    comments: any[];
+    reshares: any[];
+    likes: any[];
     image?: string;
-    avatar?: string;
-    verified?: boolean;
+    avatar?: string | null;
+    author: {
+        name: string;
+    }
 };
-
 
 export const Echos = () => {
     // Ensure TypeScript correctly infers loading as boolean and echos as Echo[]
-    // userEcho is from the useEcho hook
     const { loading, echos } = useEcho() as { loading: boolean; echos: Echo[] };
 
     if (loading) {
         return (
             <div>
-                {/* Render multiple EchoLoader components while loading */}
                 {Array.from({ length: 6 }).map((_, index) => (
                     <EchoLoader key={index} />
                 ))}
@@ -51,19 +49,17 @@ export const Echos = () => {
                     <EchoCards
                         key={echo.id}
                         id={echo.id}
-                        user={echo.user.name}
+                        authorId={echo.authorId}
+                        user={{ name: echo.author.name }} // Assuming user object is required
                         username={echo.username}
                         todaydate={formattedDate}
                         time={formattedTime}
                         content={echo.content}
                         comments={echo.comments}
-                        retweets={echo.retweets}
+                        reshares={echo.reshares}
                         likes={echo.likes}
-                        image={echo.image} 
-                        avatar={""} 
-                        verified={false}                       
-                        // avatar={echo.avatar}
-                        // verified={echo.verified}
+                        image={echo.image}
+                        avatar={echo.avatar || ""} // Handle null avatar
                     />
                 );
             })}

@@ -1,79 +1,79 @@
 import { toast } from '@/hooks/use-toast';
-import { MessageCircle, Repeat, Heart, Share2, BadgeCheck } from 'lucide-react'
+import { MessageCircle, Repeat, Heart, Share2 } from 'lucide-react';
 
-interface echoProps {
+interface EchoProps {
     id: number;
-    user: string;
+    user: { name: string }; // Add user prop
+    content: string;
+    authorId: number;
     username: string;
     time: string;
-    content: string;
-    comments: number | string;
-    retweets: number | string;
-    likes: number | string;
+    todaydate: string;
+    comments: any[];
+    reshares: any[];
+    likes: any[];
     image?: string | null;
-    avatar: string;
-    verified: boolean;
-    todaydate?: string;
+    avatar?: string | null;
 }
-
 
 export const EchoCards = ({
     id,
+    content,
     user,
+    todaydate,
+    // authorId,
     username,
     time,
-    content,
     comments,
-    retweets,
+    reshares,
     likes,
     image,
-    verified ,
-    todaydate
-
-}: echoProps) => {
-    function toastloader(){
+    // avatar
+}: EchoProps) => {
+    function toastloader() {
         const showToast = localStorage.getItem('showToast');
-            const toastContent = localStorage.getItem('toastContent');
-            if (showToast === 'true' && toastContent) {
-                toast({
-                    title: "Echoed",
-                    description: toastContent,
-                });
-                // Remove the flag and content from local storage
-                localStorage.removeItem('showToast');
-                localStorage.removeItem('toastContent');
-            }
+        const toastContent = localStorage.getItem('toastContent');
+        if (showToast === 'true' && toastContent) {
+            toast({
+                title: "Echoed",
+                description: toastContent,
+            });
+            // Remove the flag and content from local storage
+            localStorage.removeItem('showToast');
+            localStorage.removeItem('toastContent');
+        }
     }
-    
-        toastloader()
-    return (<div>
-        <div className="overflow-y-auto">
-            <div key={id} className="p-4 border-b border-gray-800">
-                <div className="flex mb-3">
-                    {/* <img src={avatar} alt={user} className="w-12 h-12 rounded-full mr-3" /> */}
-                    <Avatar name={user}  />
-                    <div>
-                        <span className="font-bold">{user}</span>
-                        {verified && <span className="text-blue-400 ml-1"><BadgeCheck/></span>}
-                        <span className="text-gray-500 ml-1"> @{username} · {time} · {todaydate?.toLocaleString()}</span>
+
+    toastloader();
+    return (
+        <div>
+            <div className="overflow-y-auto">
+                <div key={id} className="p-4 border-b border-gray-800">
+                    <div className="flex mb-3">
+                        <Avatar name={user.name} />
+                        <div>
+                            <span className="font-bold">{user.name}</span>
+                            <span className="text-gray-500 ml-1"> @{username} · {time.toLocaleString()} · {todaydate.toLocaleString()}</span>
+                        </div>
                     </div>
-                </div>
-                <p className="mb-3">{content}</p>
-                {image && <img src={image} alt="Tweet image" className="w-full rounded-2xl mb-3" />}
-                <div className="flex justify-between text-gray-500">
-                    <span><MessageCircle className="inline mr-2" />{comments}</span>
-                    <span><Repeat className="inline mr-2" />{retweets}</span>
-                    <span><Heart className="inline mr-2" />{likes}</span>
-                    <span><Share2 className="inline" /></span>
+                    <p className="mb-3">{content}</p>
+                    {image && <img src={image} alt="Tweet image" className="w-full rounded-2xl mb-3" />}
+                    <div className="flex justify-between text-gray-500">
+                        <span><MessageCircle className="inline mr-2" />{comments.length}</span>
+                        <span><Repeat className="inline mr-2" />{reshares.length}</span>
+                        <span><Heart className="inline mr-2" />{likes.length}</span>
+                        <span><Share2 className="inline" /></span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    )
-}
+    );
+};
+
 function Avatar({ name }: { name: string }) {
-    return < div className="relative inline-flex items-center justify-center w-12 h-12 overflow-hidden rounded-full mr-3 bg-gray-100 rounded-fulldark:bg-gray-600">
-<span className="font-medium text-3xl text-gray-600 dark:text-black">{name[0]}</ span>
-</div >
+    return (
+        <div className="relative inline-flex items-center justify-center w-12 h-12 overflow-hidden rounded-full mr-3 bg-gray-100 dark:bg-gray-600">
+            <span className="font-medium text-3xl text-gray-600 dark:text-black">{name[0]}</span>
+        </div>
+    );
 }
-    

@@ -1,8 +1,11 @@
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Hono } from "hono";
+import { cors } from 'hono/cors';
 import { decode, verify } from "hono/jwt";
 import { createEcho, updateEcho } from "@ronibhakta/nexxus-common";
+
+
 
 export const echoRouter = new Hono<{
     Bindings: {
@@ -13,6 +16,9 @@ export const echoRouter = new Hono<{
         userId: string;
     };
 }>();
+
+echoRouter.use('*', cors());
+
 echoRouter.use("/*", async (c, next) => {
     //extract the user id
     //pass it down to the route handler
@@ -47,7 +53,7 @@ echoRouter.post("/", async (c) => {
         const username = await prisma.user.findUnique({
             where: { id: Number(userId) },
         });
-        console.log("Decoded Payload:", username?.username as string);
+        // console.log("Decoded Payload:", username?.username as string);
         const validusername = await prisma.user.findUnique({
             where: { username: username?.username as string },
         });
@@ -120,29 +126,39 @@ echoRouter.put("/", async (c) => {
 
 //todo : add pagination
 echoRouter.get("/bulkecho", async (c) => {
-    const prisma = new PrismaClient({
-        datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
-    const echos = await prisma.echo.findMany({
-        select: {
-            id: true,
-            content: true,
-            authorId: true,
-            username: true,
-            time: true,
-            comments: true,
-            retweets: true,
-            likes: true,
-            image: true,
-            avatar: true,
-            verified: true,
-            user: true,
-        },
-        orderBy: {
-            time: 'desc',
-        },
-    });
-    return c.json({ echos });
+    try {
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+        }).$extends(withAccelerate());
+
+        const echos = await prisma.echo.findMany({
+            select: {
+                id: true,
+                content: true,
+                authorId: true,
+                username: true,
+                time: true,
+                comments: true,
+                reshares: true,
+                likes: true,
+                image: true,
+                avatar: true,
+                author: {
+                    select: {
+                        name: true,
+                    },
+                },
+            },
+            orderBy: {
+                time: 'desc', // Ensure this field exists in the schema
+            },
+        });
+
+        return c.json({ echos });
+    } catch (error) {
+        // console.error("Error fetching echos:", error);
+        return c.json({ error: "Internal Server Error" }, 500);
+    }
 });
 
 echoRouter.get("/:username/:id", async (c) => {

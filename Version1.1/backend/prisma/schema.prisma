@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,42 +8,76 @@ datasource db {
 }
 
 model User {
-  id       Int        @id @default(autoincrement()) // Primary identifier as auto-incremented integer
-  email    String  @unique
-  username String  @unique
-  phone    String? @unique
-  name     String?
-  password String
-  echos    echo[]
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String   
+  phone     String?  @unique 
+  name      String
+  avatar    String?  // URL to the user's avatar or profile image
+  verified  Boolean  @default(false)  // Verification status of the user
+  echos     echo[]
+  likes     Like[]
+  comments  Comment[]
+  shares    Share[]
+  reshares  Reshare[]
 }
 
 model echo {
-  id       Int      @id @default(autoincrement()) // Primary identifier as auto-incremented integer
-  username   String  // User handle, e.g., @username
-  time     DateTime // Timestamp of the post
-  content  String // Content of the post
-  comments Int      @default(0) // Number of comments on the post
-  retweets Int      @default(0) // Number of retweets/shares of the post
-  likes    Int      @default(0) // Number of likes on the post
-  avatar   String? // URL to the user's avatar or profile image
-  verified Boolean  @default(false) // Verification status of the user
-  image   String?  @default("") // URL to the post image
-
-  // Relation fields
-  user     User   @relation(fields: [authorId], references: [id]) // Relation to User model
-  authorId Int    // Foreign key linking to User's id
-  flagData echoContentFlagdata? // Relation to echoContentFlagdata model
-
-  // Relation fields
+  id          Int      @id @default(autoincrement())
+  content     String
+  authorId    Int
+  author      User     @relation(fields: [authorId], references: [id])
+  avatar      String?  // URL to the user's avatar or profile image
+  image       String?  @default("") // URL to the post image
+  time        DateTime @default(now()) // Timestamp of the post
+  username    String   // User handle, e.g., @username
+  flagData    echoContentFlagdata? // Relation to echoContentFlagdata model
+  likes       Like[]
+  comments    Comment[]
+  shares      Share[]
+  reshares    Reshare[]
 }
 
-model echoContentFlagdata{
+model echoContentFlagdata {
+  id          Int      @id @default(autoincrement()) // Primary identifier as auto-incremented integer
+  echoId      Int      @unique // Foreign key linking to Echo's id
+  sentiment   String   // Sentiment flag: 'neg', 'pos', 'neutral'
+  extraData   Json?    // Additional data for sentiment analysis
+  echo        echo     @relation(fields: [echoId], references: [id]) // Relation to Echo model
+}
 
-    id          Int      @id @default(autoincrement()) // Primary identifier as auto-incremented integer
-    echoId      Int      @unique // Foreign key linking to Echo's id
-    sentiment   String   // Sentiment flag: 'neg', 'pos', 'neutral'
-    extraData   Json?    // Additional data for sentiment analysis
-    // Relation fields
-    echo        echo     @relation(fields: [echoId], references: [id]) // Relation to Echo model
+model Like {
+  id      Int    @id @default(autoincrement())
+  userId  Int
+  echoId  Int
+  user    User   @relation(fields: [userId], references: [id])
+  echo    echo   @relation(fields: [echoId], references: [id])
+}
 
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  userId    Int
+  echoId    Int
+  createdAt DateTime @default(now())  // Timestamp for when the comment was created
+  user      User     @relation(fields: [userId], references: [id])
+  echo      echo     @relation(fields: [echoId], references: [id])
+}
+
+model Share {
+  id      Int    @id @default(autoincrement())
+  userId  Int
+  echoId  Int
+  user    User   @relation(fields: [userId], references: [id])
+  echo    echo   @relation(fields: [echoId], references: [id])
+}
+
+model Reshare {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  echoId    Int
+  createdAt DateTime @default(now())  // Timestamp for when the reshare was created
+  user      User     @relation(fields: [userId], references: [id])
+  echo      echo     @relation(fields: [echoId], references: [id])
 }

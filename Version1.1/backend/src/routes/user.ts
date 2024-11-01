@@ -20,6 +20,7 @@ userRouter.post("/signup", async (c) => {
             msg: "Invalid input try filling all the fields correctly",
         });
     }
+	// console.log(body);
 	const prisma = new PrismaClient({
 		datasourceUrl: c.env.DATABASE_URL,
 	}).$extends(withAccelerate());
@@ -46,7 +47,7 @@ userRouter.post("/signup", async (c) => {
 		);
 		return c.text(jwt);
 	} catch (e) {
-		console.log(e);
+		// console.log(e);
 		c.status(411);
 		return c.text("Invaild data");
 	}
@@ -64,17 +65,16 @@ userRouter.post("/signin", async (c) => {
 	const prisma = new PrismaClient({
 		datasourceUrl: c.env.DATABASE_URL,
 	}).$extends(withAccelerate());
+	// console.log(body);
 
 	try {
 		const user = await prisma.user.findFirst({
 			where: {
-				OR: [
-					{ email: body.email },
-					{ username: body.username }
-				],
+				email: body.email,
 				password: body.password,
 			},
 		});
+		console.log(user);
 		if (!user) {
 			c.status(403); //
 			return c.json({ msg: "Wrong username or password" });
@@ -87,7 +87,7 @@ userRouter.post("/signin", async (c) => {
 		);
 		return c.text(jwt);
 	} catch (e) {
-		console.log(e);
+		// console.log(e);
 		c.status(411);
 		return c.text("Invaild data");
 	}

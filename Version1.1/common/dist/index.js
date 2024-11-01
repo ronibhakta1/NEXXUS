@@ -13,7 +13,7 @@ exports.signupInput = zod_1.default.object({
     phone: zod_1.default.string().optional(),
 });
 exports.signinInput = zod_1.default.object({
-    username: zod_1.default.string(),
+    username: zod_1.default.string().optional(),
     email: zod_1.default.string().email(),
     password: zod_1.default.string().min(8),
 });
