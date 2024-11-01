@@ -15,6 +15,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.2",
     "@ronibhakta/nexxus-common": "^1.0.8",
+    "@vercel/speed-insights": "^1.0.14",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
