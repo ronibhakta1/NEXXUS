@@ -3,7 +3,7 @@ import { HomeButtons } from "../components/homebuttons"
 import { NexxusTemplate } from "../components/nexxustemplate"
 import TextReveal from "../components/ui/text-reveal"
 import { Footer } from "./footer"
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+
 
 import { cn } from "@/lib/utils";
 import AnimatedShinyText from "@/components/ui/animated-shiny-text";
