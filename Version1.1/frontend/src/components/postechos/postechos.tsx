@@ -73,7 +73,7 @@ export const PostEchos = () => {
                     })
                 }} />
                 <div className="flex justify-between items-center">
-                    <div className="flex col-span-3 space-x-1">
+                    <div className="flex col-span-3 space-x-2">
                         <button onClick={generateRecommendations} ><BrainCircuit /></button>
                         <button><ImageIcon /></button>
                         <button><Smile /></button>

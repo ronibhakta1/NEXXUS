@@ -27,7 +27,7 @@ export const HomeButtons = () => {
         </p>
         <p className="font-bold mb-4">Already have an account?</p>
         <button
-            className="w-5/12 border border-gray-700 text-[#1d9bf0] hover:bg-[#031018] py-2 px-4 rounded-full font-bold"
+            className="w-5/12 border border-gray-700 text-[#1d9bf0] hover:bg-[#031018] py-2 px-4 rounded-full font-bold "
             onClick={() => window.location.href = '/signin'}
         >
             Sign in

@@ -1,21 +1,39 @@
 // import { Auth } from "../components/auth"
 import { HomeButtons } from "../components/homebuttons"
 import { NexxusTemplate } from "../components/nexxustemplate"
+import TextReveal from "../components/ui/text-reveal"
+import { Footer } from "./footer"
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+
+import { cn } from "@/lib/utils";
+import AnimatedShinyText from "@/components/ui/animated-shiny-text";
+import { MoveDown } from "lucide-react";
 
 export const NexxusHome = () => {
-    return <div className="grid grid-cols-2">
-        <NexxusTemplate />
-        <div className=" items-center justify-center place-content-center bg-black">
+    return <div>
+        <div className="grid grid-cols-2 b-20">
+            <NexxusTemplate />
+            <div className=" items-center justify-center place-content-center bg-black">
                 <HomeButtons />
-        </div>
-        <footer className="absolute bottom-0 left-0 right-0 p-4 text-xs text-gray-500">
-            <nav className="flex flex-wrap justify-center gap-3">
-                {['About', 'Help Center', 'Terms of Service', 'Privacy Policy', 'Cookie Policy', 'Ads info', 'Blog', 'Status', 'Careers', 'Brand Resources', 'Advertising', 'Marketing', 'Twitter for Business', 'Developers', 'Directory', 'Settings'].map((link, index) => (
-                    <a key={index} href="#" className="hover:underline">{link}</a>
-                ))}
-                <span>© 2023 NEXXUS, Inc.</span>
-            </nav>
-        </footer>
+            </div>
 
+        </div>
+        <div className="flex -mt-20 items-center justify-center">
+            <div
+                className={cn(
+                    "group rounded-full border border-black/5 bg-neutral-50 text-base text-black transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800 animate-bounce",
+                )}
+            >
+                <AnimatedShinyText className="inline-flex items-center col-span-2 justify-center px-4 py-1 transition ease-out hover:text-grey hover:duration-200 hover:dark:text-black ">
+                    <span>✨ Keep scrolling down for more</span>
+                    <MoveDown className="w-5 h-3 size-3 transition-transform duration-200 ease-in-out group-hover:translate-x-0.5" />
+                </AnimatedShinyText>
+            </div>
+        </div>
+        <div className="z-10 -mt-55 flex min-h-64 items-center justify-center  bg-black dark:bg-white">
+            <TextReveal text="Nexxus just got smarter: Dive into a world where advanced AI delivers sharper, more intuitive responses, revolutionizing every post you share." />
+        </div>
+        <Footer />
     </div>
+
 }

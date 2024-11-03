@@ -32,11 +32,9 @@ export const  Nexxus =() => {
                 {/* Right Sidebar */}
                 <div className="w-64 p-4 flex flex-col h-screen sticky top-0">
                 <RightSidebar />
-            </div>
-
-            {/* Profile Tab */}
+                {/* Profile Tab */}
             <RightDownProfileUser />
-            
+            </div>
         </div>
         <Toaster />
     </div>
