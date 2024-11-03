@@ -18,7 +18,7 @@ exports.signinInput = zod_1.default.object({
     password: zod_1.default.string().min(8),
 });
 exports.createEcho = zod_1.default.object({
-    content: zod_1.default.string(),
+    content: zod_1.default.string().min(2).max(400),
 });
 exports.updateEcho = zod_1.default.object({
     content: zod_1.default.string(),

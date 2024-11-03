@@ -15,7 +15,7 @@ export const signinInput = z.object({
 })
 
 export const createEcho = z.object({
-    content: z.string(),
+    content: z.string().min(2).max(400),
 })
 export const updateEcho = z.object({
     content: z.string(),

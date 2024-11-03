@@ -1,4 +1,5 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI("AIzaSyDhYedD3tsX2nYQ8l4vt5pkfTZpElWQ0ME");
 
@@ -9,11 +10,11 @@ const model = genAI.getGenerativeModel({
 const generationConfig = {
     temperature: 0.9,
     topP: 1,
-    maxOutputTokens: 2048,
+    maxOutputTokens: 280, // Ensuring suggestions are within tweet character limits
     responseMimeType: "text/plain",
 };
 
-async function run() {
+async function generateRefinedEchoes(userInput) {
     try {
         const chatSession = model.startChat({
             generationConfig,
@@ -22,60 +23,34 @@ async function run() {
                     role: "user",
                     parts: [
                         {
-                            text: 'Analyze the sentiment of the following Tweets and classify them as POSITIVE, NEGATIVE, or NEUTRAL. "It\'s so beautiful today!"',
+                            text: "You are a creative assistant dedicated to refining social media posts to ensure they are engaging, authentic, and suitable for a wide audience. Your goal is to transform content that may come across as offensive, harsh, or overly sensitive into something that feels positive, neutral, or appropriately funny, depending on the original tone. Use language that feels genuine and relatable, avoiding clichés or generic AI-generated phrasing.For each piece of content provided, craft four refined versions that echo the original sentiment but in a way that is more appealing and appropriate. If the content is meant to be funny, make it naturally humorous. If it’s serious or informative, keep it engaging yet respectful.you can use emogies and hashtags to make it more engaging also dont make it sound like gpts or ai.IMP dont use numbering for 4 different refined versions.",
                         },
                     ],
-                },
-                {
-                    role: "model",
-                    parts: [{ text: "POSITIVE" }],
-                },
-                {
-                    role: "user",
-                    parts: [{ text: "\"It's so cold today I can't feel my feet...\"" }],
-                },
-                {
-                    role: "model",
-                    parts: [{ text: "NEGATIVE" }],
-                },
-                {
-                    role: "user",
-                    parts: [{ text: '"The weather today is perfectly adequate."' }],
-                },
-                {
-                    role: "model",
-                    parts: [{ text: "NEUTRAL\n" }],
-                },
-                {
-                    role: "user",
-                    parts: [{ text: '"heyyyyy guys due to virus people get killed in the world."' }],
-                },
-                {
-                    role: "model",
-                    parts: [{ text: "NOTSAFE\n" }],
                 },
             ],
         });
 
-        const result = await chatSession.sendMessage("heyyyyy guys due to virus people get killed in the world you will also get killed");
-        console.log(result, " ", result.response.text());
+        // Generate refined suggestions based on the user's input
+        const result = await chatSession.sendMessage(userInput);
+        const echoes = result.response
+            .text()
+            .split("\n")
+            .filter((echo) => echo.trim());
 
-
-        const safetyRatings = result.response.candidates[0].safetyRatings;
-        const isSafe = safetyRatings.every((rating) => rating.probability === 'NEGLIGIBLE');
-        if (!isSafe) {
-            console.error("Safety concern detected:", safetyRatings);
-            // Handle the safety concern here
+        if (echoes.length === 0) {
+            console.log("No valid refined echoes generated.");
+        } else {
+            echoes.slice(0, 4).forEach((echo, index) => {
+                console.log(`Refined Echo ${index + 1}: ${echo}`);
+            });
         }
     } catch (error) {
-        if (error) {
-            console.error("Error:", error.message);
+        console.error("Error:", error.message);
+        if (error.response) {
             console.error("Response:", error.response);
-        } else {
-            throw error;
         }
     }
-
 }
 
-run();
+// Example user input
+generateRefinedEchoes("The world is a scary place with so much suffering.");

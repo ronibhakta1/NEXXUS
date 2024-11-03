@@ -5,7 +5,7 @@ export const RightSidebar = () => {
         <div className="bg-gray-900 rounded-2xl p-4 mt-4">
             <nav>
                 <ul className="space-y-6">
-                    <li><a href="#" className="text-gray-200 text-xl flex items-center"><Home className="mr-4" /> Home</a></li>
+                    <li><a href="/nexxus" className="text-gray-200 text-xl flex items-center"><Home className="mr-4" /> Home</a></li>
                     <li><a href="#" className="text-gray-200 text-xl flex items-center"><Hash className="mr-4" /> Explore</a></li>
                     <li><a href="#" className="text-gray-200 text-xl flex items-center"><Bell className="mr-4" /> Notifications</a></li>
                     <li><a href="#" className="text-gray-200 text-xl flex items-center"><Mail className="mr-4" /> Messages</a></li>
