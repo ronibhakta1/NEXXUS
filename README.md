@@ -1,5 +1,5 @@
 # Nexxus - Revolutionizing Microblogging with AI-Driven Personalization and Security
-**NEXUSS WEB LINK** ##nexxus.vercel.app
+[NEXUSS WEB LINK](https://nexxus.vercel.app)
 ## Overview
 **Nexxus** is an innovative microblogging platform designed to reshape the way people interact online. By harnessing the power of **Artificial Intelligence (AI)** and **Machine Learning (ML)**, Nexxus delivers a deeply **personalized social media experience**, while ensuring **real-time content moderation** for a safer and more engaging environment. Our platform curates content based on individual user preferences and behaviors, and proactively moderates harmful or inappropriate posts before they spread, creating a healthier online community.
 
