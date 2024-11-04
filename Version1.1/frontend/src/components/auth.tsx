@@ -34,7 +34,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
 
         <div className="grid gap-1 mb-10 md:grid-cols-2">
             <div>
-                {type === "signup" ? <LabelledInput label="Name" placeholder="Name" onChange={(e) => {
+                {type === "signup" ? <LabelledInput label="Name*" placeholder="Name" onChange={(e) => {
                     serPostInputs({
                         ...postInputs,
                         name: e.target.value
@@ -43,7 +43,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
 
             </div>
             <div>
-                {type === "signup" ? <LabelledInput label="Username" placeholder="ronibhakta123" onChange={(e) => {
+                {type === "signup" ? <LabelledInput label="Username*" placeholder="ronibhakta123" onChange={(e) => {
                     serPostInputs({
                         ...postInputs,
                         username: e.target.value
@@ -52,7 +52,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
 
             </div>
             <div>
-                <LabelledInput label="Email" placeholder="Email@gmail.com" onChange={(e) => {
+                <LabelledInput label="Email*" placeholder="Email@gmail.com" onChange={(e) => {
                     serPostInputs({
                         ...postInputs,
                         email: e.target.value
@@ -61,7 +61,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
 
             </div>
             <div className="relative">
-                <LabelledInput label="Password" type={ "Password"} placeholder="@#!&dsa231" onChange={(e) => {
+                <LabelledInput label="Password*" type={ "Password*"} placeholder="@#!&dsa231" onChange={(e) => {
                     serPostInputs({
                         ...postInputs,
                         password: e.target.value
@@ -70,7 +70,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
                 
             </div>
             <div>
-                {type === "signup" ? <LabelledInput label="Phone" placeholder="1234567890" onChange={(e) => {
+                {type === "signup" ? <LabelledInput label="Phone*" placeholder="1234567890" onChange={(e) => {
                     serPostInputs({
                         ...postInputs,
                         phone: e.target.value
@@ -106,7 +106,7 @@ interface LabelledInputType {
 }
 const LabelledInput = ({ label, placeholder, onChange, type }: LabelledInputType) => {
     return <div >
-        <label className="text-1xl block mb-2  font-medium text-gray-900 dark:text-white">{label}</label>
+        <label className="text-1xl block mb-2  font-medium text-white dark:text-white">{label}</label>
         <input onChange={onChange} type={type || "text"} id="first_name" className="  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-11/12 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={placeholder} required />
     </div>
     
