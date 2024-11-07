@@ -154,13 +154,13 @@ interface echosposter1Type {
 
 const Echosposter1 = ({ onChange, value }: echosposter1Type) => {
     return (
-        <div className="border border-slate-600 rounded-md mb-3 ">
+        <div className="border border-slate-700 rounded-md mb-3 ">
             <input
                 onChange={onChange}
                 value={value}
                 type="text"
                 placeholder=" What's happening?"
-                className="bg-transparent  text-gray-300 text-xl w-full m-2 hover:bg-slate-800 rounded-md  focus:outline-none"
+                className="bg-transparent  text-gray-300 text-xl w-full p-1.5 hover:bg-slate-900 rounded-md -mr-9 focus:outline-none"
             />
         </div>
     );
