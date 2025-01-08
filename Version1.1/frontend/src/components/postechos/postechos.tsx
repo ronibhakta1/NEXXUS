@@ -118,7 +118,7 @@ export const PostEchos = () => {
       <div className="flex">
         <img
           src={
-            "https://media.licdn.com/dms/image/v2/D4D03AQEvEHK2KOMLwQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1705087348506?e=1735776000&v=beta&t=r3U2Inqk6qyq18y_rCXFlnuoxD4CRcMrJHPFOx2O5oE"
+            "https://media.licdn.com/dms/image/v2/D4D03AQEvEHK2KOMLwQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1705087348506?e=1741824000&v=beta&t=Q8MNebf4b3FQhFvs-Qs1WPIbi4maIOxNW0YwW5iZQmg"
           }
           alt="User"
           className="w-12 h-12 rounded-full mr-3"
