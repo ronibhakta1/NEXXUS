@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-dotenv
+pydantic
+httpx
+prisma
+langchain
+openai
+textblob  # or nltk/vaderSentiment for sentiment analysis
