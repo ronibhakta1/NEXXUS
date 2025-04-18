@@ -1,0 +1,21 @@
+{
+  "name": "nexxus",
+  "version": "1.0.0",
+  "description": "[NEXUSS WEB LINK](https://nexxus.vercel.app)\r ## Overview\r **Nexxus** is an innovative microblogging platform designed to reshape the way people interact online. By harnessing the power of **Artificial Intelligence (AI)** and **Machine Learning (ML)**, Nexxus delivers a deeply **personalized social media experience**, while ensuring **real-time content moderation** for a safer and more engaging environment. Our platform curates content based on individual user preferences and behaviors, and proactively moderates harmful or inappropriate posts before they spread, creating a healthier online community.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tanishq1030/NEXXUS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Tanishq1030/NEXXUS/issues"
+  },
+  "homepage": "https://github.com/Tanishq1030/NEXXUS#readme"
+}

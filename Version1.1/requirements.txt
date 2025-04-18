@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+pydantic
+python-dotenv
+langchain
+openai
+transformers
+torch
+nltk
+scikit-learn
+alembic
+httpx
+langchain-openai

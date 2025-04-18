@@ -14,9 +14,10 @@ dist/
 # deps
 node_modules/
 .wrangler
-
+__pycache__/
+.idea
 # env
-.env
+nexxus.env
 .env.production
 .dev.vars
 
