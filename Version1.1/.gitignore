@@ -15,6 +15,7 @@ dist/
 node_modules/
 .wrangler
 __pycache__/
+.idea
 # env
 nexxus.env
 .env.production
