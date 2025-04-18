@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 
 # Load env variable from .env file
-load_dotenv()
+load_dotenv("D:/NEXXUS/Version1.1/nexxus.env")
 
 # Get the databse URL from the environment
 DATABASE_URL = os.getenv(
