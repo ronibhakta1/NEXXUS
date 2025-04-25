@@ -41,7 +41,7 @@ class Echo(Base):
     reshares = relationship("Reshare", back_populates="echo")
 
 
-class EchoContentFlagdata(Base):
+class EchoContentFlagdata(Base): 
     __tablename__ = "echoContentFlagdata"
 
     id = Column(Integer, primary_key=True, index=True)
