@@ -1,23 +1,23 @@
-from sqlalchemy.orm import Session
-from ..models import Echo
-from fastapi import Depends
-from ..database import get_db
+from AZURE_layer2.utils.weaviate_client import weaviate_client
+from AZURE_layer2.services.langchain_service import get_alternative_echo
+from AZURE_layer2.services.sentiment_service import analyze_sentiment
 
 
-async def create_echo(data: dict, db: Session = Depends(get_db)):
-    echo = Echo(
-        content=data["content"],
-        authorId=data["authorId"],
-        username=data["username"],
-        avatar=data.get("avatar"),
-        image=data.get("image", ""),
-        isPublic=False,
-    )
-    db.add(echo)
-    db.commit()
-    db.refresh(echo)
-    return echo
+def process_echo(echo_data):
+    sentiment = analyze_sentiment(echo_data.content)
 
+    if sentiment == "positive":
+        alt_text = None
+    else:
+        alt_text = get_alternative_echo(echo_data.content)
 
-async def get_echoes(db: Session = Depends(get_db)):
-    return db.query(Echo).all()
+    # Insert into Weaviate
+    data_obj = {
+        "content": echo_data.content,
+        "author_id": echo_data.author_id,
+        "sentiment": sentiment,
+        "alternative": alt_text,
+    }
+
+    weaviate_client.data_object.create(data_obj, class_name="Echo")
+    return {"status": "success", "sentiment": sentiment, "alternative": alt_text}

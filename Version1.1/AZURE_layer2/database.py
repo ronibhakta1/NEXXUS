@@ -1,30 +1,19 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 import os
+from models import Base
 
-# Load env variable from .env file
-load_dotenv("D:/NEXXUS/Version1.1/nexxus.env")
-
-# Get the databse URL from the environment
-DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgres://postgres:1030@localhost:5432/nexxdb"
-)
-
-# Create the SQLAlchemy engine
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@db:5432/nexus")
 engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Create a configured "Session" class
-Sessionlocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Base class for declrative models
-Base = declarative_base()
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
 
-# Dependency to get a database session
 def get_db():
-    db = Sessionlocal()
+    db = SessionLocal()
     try:
         yield db
     finally:

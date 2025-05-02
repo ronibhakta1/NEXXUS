@@ -1,18 +1,84 @@
-from fastapi import FastAPI
-from .routes.echo_route import router
-from .database import engine, Base
+from fastapi import FastAPI, Request, HTTPException
+import logging
+import logging.config
+import signal
+from fastapi.middleware.cors import CORSMiddleware
+from services.langchain_service import generate_positive_suggestion
+from services.sentiment_service import analyze_sentiment
+from services.weaviate_services import store_in_weaviate_with_sentiment
 
-app = FastAPI(title="NEXXUS API")
+app = FastAPI()
+
+# Example logging setup
+log_config = {
+    "version": 1,
+    "handlers": {"console": {"class": "logging.StreamHandler", "level": "DEBUG"}},
+    "root": {"level": "DEBUG", "handlers": ["console"]},
+}
+logging.config.dictConfig(log_config)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-@app.on_event("startup")
-async def startup():
-    Base.metadata.create_all(bind=engine)  # Fallback to create tables if needed
+# Shutdown handler
+def shutdown():
+    logging.info("Shutting down...")
+    # Add any cleanup code (e.g., close Weaviate client)
+    logging.shutdown()
 
 
-app.include_router(router, prefix="/v1/api")
+# Register shutdown handler
+signal.signal(signal.SIGINT, lambda sig, frame: shutdown())
+
+# Include your router
+from AZURE_layer2.routes.echo_route import router as echo_router
+
+app.include_router(echo_router, prefix="/v1/api")
 
 
 @app.get("/")
 async def read_root():
-    return {"message": "NEXXUS API is running"}
+    return {"message": "Welcome to the API. Use /v1/api for endpoints."}
+
+
+@app.post("/process_echo")
+async def process_echo(request: Request):
+    try:
+        # Parse the incoming JSON payload
+        payload = await request.json()
+        content = payload.get("content")
+        author_id = payload.get("author_id")
+
+        if not content or not author_id:
+            raise HTTPException(status_code=400, detail="Invalid input")
+
+        # Analyze sentiment
+        sentiment = analyze_sentiment(content)
+
+        # Store in Weaviate
+        store_in_weaviate_with_sentiment(content, author_id, sentiment)
+
+        # Generate alternative suggestion if sentiment is neutral or negative
+        alternative = None
+        if sentiment in ["neutral", "negative"]:
+            alternative = generate_positive_suggestion(content)
+
+        # Prepare response
+        response = {
+            "content": content,
+            "author_id": author_id,
+            "sentiment": sentiment,
+            "alternative": alternative,
+        }
+
+        return response
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
