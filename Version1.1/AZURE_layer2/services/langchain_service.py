@@ -1,13 +1,13 @@
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-import os
+from config.settings import settings
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=".env")
 
-# Load OpenAI API key from environment variables
-openai_api_key = os.getenv("OPENAI_API_KEY")
+# Load OpenAI API key from centralized configuration
+openai_api_key = settings.OPENAI_API_KEY
 if not openai_api_key:
     raise ValueError("OPENAI_API_KEY environment variable not set")
 

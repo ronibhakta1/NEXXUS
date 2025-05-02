@@ -8,6 +8,7 @@ import os
 from dotenv import load_dotenv
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
+from config.settings import settings
 
 load_dotenv(".env")
 
@@ -25,7 +26,8 @@ prompt_template = PromptTemplate(
 )
 
 # Initialize Weaviate client
-connection_params = ConnectionParams.from_url("http://localhost:8080", grpc_port=50051)
+WEAVIATE_URL = settings.WEAVIATE_URL
+connection_params = ConnectionParams.from_url(WEAVIATE_URL, grpc_port=50051)
 weaviate_client = WeaviateClient(connection_params)
 
 
