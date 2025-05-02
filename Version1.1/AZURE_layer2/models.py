@@ -1,94 +1,52 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
-from .database import Base
-import datetime
+from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
+
+Base = declarative_base()
 
 
 class User(Base):
-    __tablename__ = "User"
-
+    __tablename__ = "user"
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, nullable=False)
-    email = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
-    phone = Column(String, unique=True)
-    name = Column(String, nullable=False)
-    avatar = Column(String)
+    username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+    password = Column(String)
+    phone = Column(String, unique=True, nullable=True)
+    name = Column(String)
+    avatar = Column(String, nullable=True)
     verified = Column(Boolean, default=False)
     echos = relationship("Echo", back_populates="author")
-    likes = relationship("Like", back_populates="user")
-    comments = relationship("Comment", back_populates="user")
-    shares = relationship("Share", back_populates="user")
-    reshares = relationship("Reshare", back_populates="user")
 
 
 class Echo(Base):
     __tablename__ = "echo"
-
     id = Column(Integer, primary_key=True, index=True)
-    content = Column(String, nullable=False)
-    authorId = Column(Integer, ForeignKey("User.id"), nullable=False)
-    avatar = Column(String)
+    content = Column(String)
+    author_id = Column(Integer, ForeignKey("user.id"))
+    avatar = Column(String, nullable=True)
     image = Column(String, default="")
-    time = Column(DateTime, default=datetime.datetime.utcnow)
-    username = Column(String, nullable=False)
-    isPublic = Column(Boolean, default=False)
+    time = Column(DateTime, default=datetime.utcnow)
+    username = Column(String)
+    visibility = Column(String, default="private")
     author = relationship("User", back_populates="echos")
-    flagData = relationship("EchoContentFlagdata", back_populates="echo", uselist=False)
-    likes = relationship("Like", back_populates="echo")
-    comments = relationship("Comment", back_populates="echo")
-    shares = relationship("Share", back_populates="echo")
-    reshares = relationship("Reshare", back_populates="echo")
+    flag_data = relationship(
+        "EchoContentFlagdata", uselist=False, back_populates="echo"
+    )
 
 
 class EchoContentFlagdata(Base):
-    __tablename__ = "echoContentFlagdata"
-
+    __tablename__ = "echo_content_flagdata"
     id = Column(Integer, primary_key=True, index=True)
-    echoId = Column(Integer, ForeignKey("echo.id"), unique=True, nullable=False)
+    echo_id = Column(Integer, ForeignKey("echo.id"), unique=True)
     sentiment = Column(String)
-    extraData = Column(JSON)
-    echo = relationship("Echo", back_populates="flagData")
+    extra_data = Column(String, nullable=True)
+    echo = relationship("Echo", back_populates="flag_data")
 
 
-class Like(Base):
-    __tablename__ = "Like"
-
+class FlaggedEchoLog(Base):
+    __tablename__ = "flagged_echo_log"
     id = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey("User.id"), nullable=False)
-    echoId = Column(Integer, ForeignKey("echo.id"), nullable=False)
-    user = relationship("User", back_populates="likes")
-    echo = relationship("Echo", back_populates="likes")
-
-
-class Comment(Base):
-    __tablename__ = "Comment"
-
-    id = Column(Integer, primary_key=True, index=True)
-    content = Column(String, nullable=False)
-    userId = Column(Integer, ForeignKey("User.id"), nullable=False)
-    echoId = Column(Integer, ForeignKey("echo.id"), nullable=False)
-    createdAt = Column(DateTime, default=datetime.datetime.utcnow)
-    user = relationship("User", back_populates="comments")
-    echo = relationship("Echo", back_populates="comments")
-
-
-class Share(Base):
-    __tablename__ = "Share"
-
-    id = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey("User.id"), nullable=False)
-    echoId = Column(Integer, ForeignKey("echo.id"), nullable=False)
-    user = relationship("User", back_populates="shares")
-    echo = relationship("Echo", back_populates="shares")
-
-
-class Reshare(Base):
-    __tablename__ = "Reshare"
-
-    id = Column(Integer, primary_key=True, index=True)
-    userId = Column(Integer, ForeignKey("User.id"), nullable=False)
-    echoId = Column(Integer, ForeignKey("echo.id"), nullable=False)
-    createdAt = Column(DateTime, default=datetime.datetime.utcnow)
-    user = relationship("User", back_populates="reshares")
-    echo = relationship("Echo", back_populates="reshares")
+    user_id = Column(Integer, ForeignKey("user.id"))
+    echo_id = Column(Integer, ForeignKey("echo.id"))
+    flagged_at = Column(DateTime, default=datetime.utcnow)

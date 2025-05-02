@@ -2,14 +2,18 @@ fastapi
 uvicorn[standard]
 sqlalchemy
 psycopg2-binary
+# pydantic== 1.10.12
+pydantic-core
 pydantic
+pydantic-settings
 python-dotenv
 langchain
 openai
-transformers
 torch
 nltk
 scikit-learn
-alembic
 httpx
 langchain-openai
+pytest
+pytest-cov
+pytest-asyncio
