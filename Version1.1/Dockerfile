@@ -22,6 +22,12 @@ FROM python:3.9-slim AS final
 # Set the working directory
 WORKDIR /app
 
+# Set environment variables (aligning with config/settings.py)
+# Set non-sensitive environment variables
+ENV WEAVIATE_URL="http://weaviate:8080"
+
+# Sensitive data like OPENAI_API_KEY should be passed at runtime or managed via Docker secrets
+
 # Copy pre-downloaded packages and install dependencies
 COPY --from=base /app/packages ./packages
 COPY requirements.txt ./

@@ -2,9 +2,6 @@ from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from config.settings import settings
-from dotenv import load_dotenv
-
-load_dotenv(dotenv_path=".env")
 
 # Load OpenAI API key from centralized configuration
 openai_api_key = settings.OPENAI_API_KEY

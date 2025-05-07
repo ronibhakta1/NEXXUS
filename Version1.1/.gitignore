@@ -33,3 +33,6 @@ lerna-debug.log*
 # misc
 .DS_Store
 
+# Ignore the 25.1 file
+25.1
+
