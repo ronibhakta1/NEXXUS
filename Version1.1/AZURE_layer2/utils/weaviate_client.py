@@ -1,10 +1,8 @@
 import weaviate
 import os
-from dotenv import load_dotenv
+from config.settings import settings
 
-load_dotenv()
-
-WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://localhost:8080")
+WEAVIATE_URL = settings.WEAVIATE_URL
 
 client = weaviate.Client(
     url=WEAVIATE_URL,

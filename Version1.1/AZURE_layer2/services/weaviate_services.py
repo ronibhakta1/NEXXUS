@@ -5,12 +5,9 @@ from weaviate.connect import ConnectionParams
 from weaviate import WeaviateClient
 import uuid
 import os
-from dotenv import load_dotenv
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from config.settings import settings
-
-load_dotenv(".env")
 
 # Initialize OpenAI LLM
 openai_api_key = os.getenv("OPENAI_API_KEY")

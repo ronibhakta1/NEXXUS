@@ -1,11 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from config.settings import settings
-from models import Base
 
-DATABASE_URL = settings.DATABASE_URL
-engine = create_engine(DATABASE_URL)
+# Removed DATABASE_URL as Weaviate is the only database being used
+Base = declarative_base()
+engine = None  # Placeholder for future database engine if needed
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Create database tables

@@ -1,17 +1,10 @@
-from pydantic import BaseSettings
+import os
 
-class Settings(BaseSettings):
-    # Database settings
-    DATABASE_URL: str
 
-    # OpenAI API Key
-    OPENAI_API_KEY: str
+class Config:
+    # Centralized access to environment variables
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "default_openai_key")
+    WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://localhost:8080")
 
-    # Weaviate URL
-    WEAVIATE_URL: str
 
-    class Config:
-        env_file = ".env"  # Load environment variables from .env file
-
-# Instantiate settings
-settings = Settings()
+config = Config()
