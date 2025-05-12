@@ -1,13 +1,11 @@
 # AZURE_layer2/services/weaviate_services.py
 
 import weaviate
-from weaviate.connect import ConnectionParams
-from weaviate import WeaviateClient
 import uuid
 import os
-from langchain_openai import OpenAI
+from langchain import OpenAI
 from langchain.prompts import PromptTemplate
-from config.settings import settings
+from AZURE_layer2.config.settings import settings
 
 # Initialize OpenAI LLM
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -24,8 +22,7 @@ prompt_template = PromptTemplate(
 
 # Initialize Weaviate client
 WEAVIATE_URL = settings.WEAVIATE_URL
-connection_params = ConnectionParams.from_url(WEAVIATE_URL, grpc_port=50051)
-weaviate_client = WeaviateClient(connection_params)
+weaviate_client = weaviate.Client(url=WEAVIATE_URL)
 
 
 def generate_positive_suggestion(content: str) -> str:
@@ -64,3 +61,36 @@ def store_in_weaviate_with_sentiment(content: str, author_id: int, sentiment: st
     )
 
     return object_uuid
+
+
+def store_in_weaviate(content: str, metadata: dict):
+    """
+    Store content and metadata in Weaviate.
+
+    Args:
+        content (str): The content to store.
+        metadata (dict): Additional metadata to associate with the content.
+    """
+    if not weaviate_client.is_ready():
+        raise ConnectionError("Weaviate is not ready.")
+
+    class_name = "EchoVector"
+
+    # Ensure the schema exists
+    if not weaviate_client.schema.contains({"classes": [{"class": class_name}]}):
+        weaviate_client.schema.create_class(
+            {
+                "class": class_name,
+                "properties": [
+                    {"name": "content", "dataType": ["text"]},
+                    {"name": "metadata", "dataType": ["text"]},
+                ],
+                "vectorizer": "text2vec-openai",
+            }
+        )
+
+    # Create the data object
+    weaviate_client.data_object.create(
+        data_object={"content": content, "metadata": metadata},
+        class_name=class_name,
+    )

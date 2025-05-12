@@ -13,8 +13,11 @@ RUN apt-get update && apt-get install -y \
 # Copy the requirements file
 COPY requirements.txt ./
 
+# Upgrade pip to the latest version before downloading packages
+RUN pip install --upgrade pip
+
 # Pre-download Python packages to a local cache
-RUN pip download -r requirements.txt -d ./packages
+RUN pip download --no-cache-dir -r requirements.txt -d ./packages
 
 # Final stage to build the runtime image
 FROM python:3.9-slim AS final
@@ -32,6 +35,9 @@ ENV WEAVIATE_URL="http://weaviate:8080"
 COPY --from=base /app/packages ./packages
 COPY requirements.txt ./
 RUN pip install --no-cache-dir --no-index --find-links=./packages -r requirements.txt
+
+# Download NLTK vader_lexicon data
+RUN python -m nltk.downloader vader_lexicon
 
 # Copy the application code
 COPY AZURE_layer2 ./AZURE_layer2

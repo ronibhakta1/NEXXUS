@@ -1,7 +1,9 @@
 import nltk
+
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-nltk.download("vader_lexicon")
+# Removed runtime download of `vader_lexicon` as it is pre-downloaded in the Docker build
+# nltk.download("vader_lexicon")
 sia = SentimentIntensityAnalyzer()
 
 

@@ -7,4 +7,4 @@ class Config:
     WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://localhost:8080")
 
 
-config = Config()
+settings = Config()

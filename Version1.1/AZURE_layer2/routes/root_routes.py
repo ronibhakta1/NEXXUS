@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, HTTPException
-from services.langchain_service import generate_positive_suggestion
-from services.sentiment_service import analyze_sentiment
-from services.weaviate_services import store_in_weaviate_with_sentiment
+from AZURE_layer2.services.langchain_service import generate_positive_suggestion
+from AZURE_layer2.services.sentiment_service import analyze_sentiment
+from AZURE_layer2.services.weaviate_services import store_in_weaviate_with_sentiment
 
 router = APIRouter()
 

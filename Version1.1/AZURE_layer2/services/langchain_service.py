@@ -1,7 +1,7 @@
-from langchain_openai import OpenAI
+from langchain import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from config.settings import settings
+from AZURE_layer2.config.settings import settings
 
 # Load OpenAI API key from centralized configuration
 openai_api_key = settings.OPENAI_API_KEY
@@ -9,7 +9,7 @@ if not openai_api_key:
     raise ValueError("OPENAI_API_KEY environment variable not set")
 
 # Initialize OpenAI LLM
-llm = OpenAI(api_key=openai_api_key, temperature=0.7)
+llm = OpenAI(openai_api_key=openai_api_key, temperature=0.7)
 
 # Define prompt template for generating positive suggestions
 positive_prompt_template = PromptTemplate(

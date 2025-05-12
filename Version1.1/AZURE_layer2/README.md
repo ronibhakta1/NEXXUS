@@ -3,7 +3,7 @@
 This guide provides step-by-step instructions to set up the `AZURE_layer2` module for development and deployment. The module uses FastAPI for the backend, Weaviate as the database, and integrates with OpenAI for vectorization and sentiment analysis.
 
 ---
-
+ 
 ## Prerequisites
 
 Before setting up `AZURE_layer2`, ensure you have the following installed:
@@ -22,7 +22,7 @@ Before setting up `AZURE_layer2`, ensure you have the following installed:
 git clone <repository-url>
 
 # Navigate to the AZURE_layer2 directory
-cd <repository-path>/Version1.1/AZURE_layer2
+cd <repository-path>/Version1.1 # Or directly to AZURE_layer2 if cloning this specific module
 ```
 
 ### 2. Set Up Environment Variables
@@ -102,7 +102,7 @@ If you are running the application locally (without Docker):
    - Generates positive and alternative suggestions using OpenAI.
 
 ---
-
+ 
 ## Troubleshooting
 
 1. **Docker Issues**:
@@ -113,8 +113,6 @@ If you are running the application locally (without Docker):
    - Verify that the `.env` file is correctly set up.
 
 3. **Dependency Issues**:
-   - Ensure all Python dependencies are installed.
-   - Use `pip install --upgrade pip` to update `pip` if needed.
 
 ---
 
