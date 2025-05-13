@@ -1,40 +1,37 @@
+import uvicorn
 from fastapi import FastAPI
-import logging
-import logging.config
-import signal
-from fastapi.middleware.cors import CORSMiddleware
-from AZURE_layer2.routes.echo_route import router as echo_router
-from AZURE_layer2.routes.root_routes import router as root_router
+from AZURE_layer2.routes import api
+from contextlib import asynccontextmanager
+from fastapi.responses import RedirectResponse
 
-app = FastAPI()
 
-# Example logging setup
-log_config = {
-    "version": 1,
-    "handlers": {"console": {"class": "logging.StreamHandler", "level": "DEBUG"}},
-    "root": {"level": "DEBUG", "handlers": ["console"]},
-}
-logging.config.dictConfig(log_config)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan event handler for startup and shutdown"""
+    # Startup logic (if needed)
+    try:
+        # Add any initialization logic here
+        pass
+    except Exception as e:
+        # Log or handle startup errors
+        pass
+    yield
+    # Shutdown logic (if needed)
 
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+
+app = FastAPI(
+    title="Nexxus API",
+    description="Nexxus: A Layered API System",
+    version="0.1.0",
+    lifespan=lifespan,
 )
 
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/v1/api/")
 
-# Shutdown handler
-def shutdown():
-    logging.info("Shutting down...")
-    logging.shutdown()
+# Include API routes
+app.include_router(api.router, prefix="/v1/api")
 
-
-# Register shutdown handler
-signal.signal(signal.SIGINT, lambda sig, frame: shutdown())
-
-# Include routers
-app.include_router(echo_router, prefix="/v1/api")
-app.include_router(root_router)
+if __name__ == "__main__":
+    uvicorn.run("AZURE_layer2.app:app", host="0.0.0.0", port=8000, reload=True)
