@@ -7,10 +7,6 @@ router = APIRouter()
 
 
 @router.get("/")
-async def read_root():
-    return {"message": "Welcome to the API. Use /v1/api for endpoints."}
-
-
 @router.post("/process_echo")
 async def process_echo(request: Request):
     try:

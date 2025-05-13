@@ -42,8 +42,13 @@ RUN python -m nltk.downloader vader_lexicon
 # Copy the application code
 COPY AZURE_layer2 ./AZURE_layer2
 
-# Expose the FastAPI port
-EXPOSE 8000
+EXPOSE  8000
 
-# Command to run the FastAPI application
-CMD ["uvicorn", "AZURE_layer2.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Setup NGINX
+RUN apt-get update && apt-get install -y nginx
+RUN adduser --disabled-password --gecos "" nginx
+COPY ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/nginx/conf.d/nexxus.conf /etc/nginx/conf.d/nexxus.conf
+
+# Run FastAPI app and Nginx
+CMD ["sh", "-c", "python -m uvicorn AZURE_layer2.app:app --host 0.0.0.0 --port 1337 --workers=${NEXXUS_WORKERS:-1} --log-level=${NEXXUS_LOG_LEVEL:-info} & exec nginx"]

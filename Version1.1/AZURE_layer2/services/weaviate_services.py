@@ -12,7 +12,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key:
     raise ValueError("OPENAI_API_KEY environment variable not set")
 
-llm = OpenAI(api_key=openai_api_key, temperature=0.7)
+llm = OpenAI(openai_api_key=openai_api_key, temperature=0.7)
 
 # Define prompt template for generating positive suggestions
 prompt_template = PromptTemplate(

@@ -22,33 +22,24 @@ services:
   fastapi:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
       args:
         - PIP_RETRIES=5
     restart: always
     container_name: nexxus_fastapi
+    ports:
+      - "8000:80"
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       WEAVIATE_URL: http://weaviate:8080
+      NEXXUS_PORT: 1337
+      
     env_file: .env # Explicitly state that .env file provides variables
     depends_on:
       - weaviate # Ensures weaviate starts before fastapi
     networks:
       - nexxus_network
-
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./docker/conf.d:/etc/nginx/conf.d:ro
-    depends_on:
-      - fastapi
-    networks:
-      - nexxus_network
-
+    
 volumes:
   weaviate_data:
 
