@@ -36,16 +36,6 @@ def get_echo_weaviate_schema():
                 },  # Don't vectorize username by default
             },
             {
-                "name": "avatarUrl",
-                "dataType": ["text"],
-                "description": "URL to the author's avatar",
-            },
-            {
-                "name": "imageUrl",
-                "dataType": ["text"],
-                "description": "URL to an image in the echo",
-            },
-            {
                 "name": "timestamp",
                 "dataType": ["date"],
                 "description": "Timestamp of when the echo was created/ingested",

@@ -22,6 +22,4 @@ class EchoCreate(BaseModel):
     content: str
     authorId: str
     username: str  # From Prisma echo.username
-    avatar: Optional[str] = None
-    image: Optional[str] = None
     flagData: Optional[EchoContentFlagDataInput] = None

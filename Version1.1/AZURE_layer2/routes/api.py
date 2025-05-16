@@ -61,8 +61,6 @@ async def echo_endpoint(
         "content": echo_data.content,
         "authorId": echo_data.authorId,
         "username": echo_data.username,
-        "avatarUrl": echo_data.avatar,  # Pydantic model uses 'avatar'
-        "imageUrl": echo_data.image,  # Pydantic model uses 'image'
         "timestamp": datetime.utcnow().isoformat()
         + "Z",  # Weaviate expects ISO 8601 UTC
     }
