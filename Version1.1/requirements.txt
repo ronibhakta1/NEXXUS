@@ -3,6 +3,10 @@ uvicorn[standard]
 sqlalchemy
 psycopg2-binary
 pydantic
-langchain
 openai
 nltk
+weaviate-client
+python-dotenv
+langchain # Core Langchain
+langchain-openai
+langchain-community # If you need specific community integrations, otherwise optional
