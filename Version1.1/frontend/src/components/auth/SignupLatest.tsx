@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import NexxusLogo from '@/assets/nexxus.svg';
 
 interface FormData {
   name: string;
@@ -90,6 +91,11 @@ const SignupForm: React.FC = () => {
         onSubmit={handleSubmit}
         className="bg-zinc-900 p-8 rounded-lg w-full max-w-md shadow-xl"
       >
+        <div className="text-center mb-2">
+           <div className="flex justify-center items-center mb-2">
+            <img src={NexxusLogo} alt="Nexxus Logo" className="w-20 h-20" />
+          </div>
+        </div>
         <h2 className="text-2xl font-bold mb-6 text-center">Create your account</h2>
 
         <input

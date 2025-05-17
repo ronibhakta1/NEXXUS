@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import NexxusLogo from '@/assets/nexxus.svg';
 
 const SigninPage: React.FC = () => {
   const [showPasswordPage, setShowPasswordPage] = useState(false);
@@ -11,31 +12,14 @@ const SigninPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white p-4 relative">
-      {/* Close icon */}
-      <button className="absolute top-4 left-4 text-white">
-        <X className="w-5 h-5" />
-      </button>
-
       <div className="bg-zinc-900 w-full max-w-md p-8 rounded-2xl shadow-xl">
-        {/* Nexxus Logo */}
-        <div className="text-center mb-6">
-          <div className="flex justify-center items-center text-3xl font-bold mb-2"><svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 736.000000 736.000000" height="66.0000pt" width="66.0000pt" xmlns="http://www.w3.org/2000/svg" version="1.0">
-<metadata>
-Created by potrace 1.16, written by Peter Selinger 2001-2019
-</metadata>
-<g stroke="none" fill="#ffffff" transform="translate(0.000000,736.000000) scale(0.100000,-0.100000)">
-<path d="M2704 4701 c7 -10 425 -365 1141 -966 105 -88 240 -201 300 -252
-l110 -93 5 538 5 537 113 3 112 3 0 -791 c0 -434 -3 -790 -6 -790 -3 0 -98 80
--212 178 -113 97 -222 191 -243 207 -20 17 -70 59 -111 95 -41 36 -281 243
--534 460 -252 217 -520 447 -595 512 -75 65 -141 118 -145 118 -5 0 -8 -406
--7 -903 l2 -902 121 -3 120 -3 2 646 3 645 125 -107 c223 -191 816 -701 1099
--945 l276 -237 173 -1 172 0 0 1030 0 1030 -355 0 -355 0 -2 -401 -3 -401
--295 249 c-162 136 -377 317 -477 401 l-181 152 -182 0 c-101 0 -179 -4 -176
--9z"></path>
-<path d="M3112 3048 l3 -393 123 -3 122 -3 0 294 0 293 -120 102 c-66 56 -122
-102 -125 102 -3 0 -4 -177 -3 -392z"></path>
-</g>
-</svg></div>
+       
+{/* Nexxus Logo */}
+<div className="text-center mb-6">
+  <div className="flex justify-center items-center mb-2">
+    <img src={NexxusLogo} alt="Nexxus Logo" className="w-20 h-20" />
+  </div>
+
           <div className="text-2xl font-bold">
             {showPasswordPage ? 'Enter your password' : 'Sign in to NEXXUS'}
           </div>
@@ -51,6 +35,7 @@ l110 -93 5 538 5 537 113 3 112 3 0 -791 c0 -434 -3 -790 -6 -790 -3 0 -98 80
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
             </svg>
+             
             </div>
 
             {/* Divider */}
@@ -126,7 +111,7 @@ l110 -93 5 538 5 537 113 3 112 3 0 -791 c0 -434 -3 -790 -6 -790 -3 0 -98 80
           </span>
         </div>
       </div>
-    </div>
+     </div>
   );
 };
 
