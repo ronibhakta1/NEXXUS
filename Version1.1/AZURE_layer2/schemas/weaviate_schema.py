@@ -8,14 +8,8 @@ def get_echo_weaviate_schema():
     return {
         "class": "Echo",
         "description": "An echo post with its content and metadata",
-        "vectorizer": "text2vec-openai",  # As configured in Weaviate's docker-compose
-        "moduleConfig": {
-            "text2vec-openai": {  # Ensure this matches your Weaviate's module config
-                "model": "ada",
-                "modelVersion": "002",
-                "type": "text",
-            }
-        },
+        "vectorizer": "none",  # Temporarily disable vectorization
+        # moduleConfig for text2vec-openai is removed as vectorizer is "none"
         "properties": [
             {
                 "name": "content",
@@ -31,9 +25,7 @@ def get_echo_weaviate_schema():
                 "name": "username",
                 "dataType": ["text"],
                 "description": "The username of the author",
-                "moduleConfig": {
-                    "text2vec-openai": {"skip": True, "vectorizePropertyName": False}
-                },  # Don't vectorize username by default
+                # moduleConfig for skipping vectorization is not needed if class vectorizer is "none"
             },
             {
                 "name": "timestamp",

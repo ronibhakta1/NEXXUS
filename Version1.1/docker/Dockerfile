@@ -29,4 +29,4 @@ COPY ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/nginx/conf.d/nexxus.conf /etc/nginx/conf.d/nexxus.conf
 
 # Run FastAPI app and Nginx
-CMD ["sh", "-c", "python -m uvicorn AZURE_layer2.app:app --host 0.0.0.0 --port 1337 --workers=${NEXXUS_WORKERS:-1} --log-level=${NEXXUS_LOG_LEVEL:-info} & exec nginx"]
+CMD ["sh", "-c", "python -m uvicorn AZURE_layer2.app:app --host 0.0.0.0 --port ${NEXXUS_PORT:-8000} --workers=${NEXXUS_WORKERS:-1} --log-level=${NEXXUS_LOG_LEVEL:-info} & exec nginx"]

@@ -12,9 +12,17 @@ services:
       DEFAULT_VECTORIZER_MODULE: 'text2vec-openai'
       ENABLE_MODULES: 'text2vec-openai'
       OPENAI_APIKEY: ${OPENAI_API_KEY}  # Pulls from your env/.env
+
       
     volumes:
       - weaviate_data:/var/lib/weaviate
+    healthcheck: # Added healthcheck for Weaviate
+        test: ["CMD-SHELL", "wget -q --spider --timeout=10 http://localhost:8080/v1/.well-known/live || exit 1"]
+        interval: 5s
+        timeout: 10s
+        retries: 5
+        start_period: 10s 
+      
 
   fastapi:
     build:
@@ -26,10 +34,9 @@ services:
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       WEAVIATE_URL: http://weaviate:8080
-      NEXXUS_PORT: 1337
     depends_on:
       weaviate:
-        condition: service_started # Change to service_started if healthcheck is removed
+        condition: service_healthy # Change to service_started if healthcheck is removed
     env_file: # Load environment variables from .env file
       - .env
 
