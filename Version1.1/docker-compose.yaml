@@ -2,6 +2,7 @@ services:
   weaviate:
     image: semitechnologies/weaviate:1.25.3
     restart: always
+    container_name: nexxus-db
     ports:
       - "8080:8080"
     environment:
@@ -11,22 +12,33 @@ services:
       DEFAULT_VECTORIZER_MODULE: 'text2vec-openai'
       ENABLE_MODULES: 'text2vec-openai'
       OPENAI_APIKEY: ${OPENAI_API_KEY}  # Pulls from your env/.env
-      CLUSTER_HOSTNAME: 'node1'
+
+      
     volumes:
       - weaviate_data:/var/lib/weaviate
+    healthcheck: # Added healthcheck for Weaviate
+        test: ["CMD-SHELL", "wget -q --spider --timeout=10 http://localhost:8080/v1/.well-known/live || exit 1"]
+        interval: 5s
+        timeout: 10s
+        retries: 5
+        start_period: 10s 
+      
 
   fastapi:
     build:
       context: .
-      dockerfile: Dockerfile
-    restart: always
+      dockerfile: docker/Dockerfile
+    container_name: nexxus-api
     ports:
-      - "8000:8000"
+      - "8000:80"
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       WEAVIATE_URL: http://weaviate:8080
     depends_on:
-      - weaviate
+      weaviate:
+        condition: service_healthy # Change to service_started if healthcheck is removed
+    env_file: # Load environment variables from .env file
+      - .env
 
 volumes:
   weaviate_data:
