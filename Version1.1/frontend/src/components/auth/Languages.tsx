@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NexxusLogo from '@/assets/nexxus.svg'
 
 const Languages: React.FC = () => {
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
@@ -34,17 +33,12 @@ const Languages: React.FC = () => {
 
     setError('');
     console.log('Selected Languages:', selectedLanguages);
-    navigate('/signupLatest'); 
+    navigate('/signupLatest'); // Final page navigation
   };
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center">
       <div className="bg-zinc-900 p-8 rounded-lg w-full max-w-md shadow-xl text-center">
-           <div className="text-center mb-6">
-          <div className="flex justify-center items-center mb-2">
-            <img src={NexxusLogo} alt="Nexxus Logo" className="w-20 h-20" />
-          </div>
-          </div>
         <h1 className="text-2xl font-bold mb-4">Select Spoken Languages</h1>
         <p className="text-gray-400 mb-4 text-sm">Pick at least one language you speak.</p>
 

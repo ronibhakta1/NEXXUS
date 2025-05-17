@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff } from 'lucide-react' 
-import NexxusLogo from '@/assets/nexxus.svg'
+import { Eye, EyeOff } from 'lucide-react' // Using lucide icons (lightweight)
+
 
 const PasswordPage = () => {
   const [password, setPassword] = useState('')
@@ -37,11 +37,10 @@ const PasswordPage = () => {
   return (
     <div className="min-h-screen bg-[#1d1f23] flex justify-center items-center">
       <div className="bg-black text-white rounded-2xl w-[380px] p-6 shadow-xl relative">
+        <button className="absolute top-4 left-4 text-gray-400 text-xl">×</button>
 
-        <div className="text-center mb-6">
-           <div className="flex justify-center items-center mb-2">
-            <img src={NexxusLogo} alt="Nexxus Logo" className="w-20 h-20" />
-           </div>
+        <div className="flex justify-center mb-6">
+        <img src="/assets/nexxus.svg" />
         </div>
 
         <h2 className="text-xl font-semibold mb-2">You’ll need a password</h2>
