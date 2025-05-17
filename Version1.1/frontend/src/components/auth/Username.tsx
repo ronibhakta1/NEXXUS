@@ -1,6 +1,5 @@
 import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NexxusLogo from '@/assets/nexxus.svg'
 
 const Username: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -15,17 +14,13 @@ const Username: React.FC = () => {
       return;
     }
 
-    navigate('/notification'); 
+    // Optionally store username somewhere (context, localStorage, etc.)
+    navigate('/notification'); // ✅ Go to notifications page next
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white">
       <form onSubmit={handleSubmit} className="bg-zinc-900 p-8 rounded-lg w-full max-w-md shadow-xl">
-         <div className="text-center mb-6">
-          <div className="flex justify-center items-center mb-2">
-            <img src={NexxusLogo} alt="Nexxus Logo" className="w-20 h-20" />
-          </div>
-          </div>
         <h2 className="text-2xl font-bold mb-6 text-center">Choose a Username</h2>
 
         <input

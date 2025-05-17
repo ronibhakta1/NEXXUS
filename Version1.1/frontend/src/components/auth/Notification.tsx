@@ -1,27 +1,22 @@
 import React from 'react'
 import { BellIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import NexxusLogo from '@/assets/nexxus.svg'
 
 const Notifications: React.FC = () => {
   const navigate = useNavigate()
 
   const handleAllow = () => {
-    navigate('/languages') 
+    // You can integrate actual notification permissions here if needed
+    navigate('/languages') // Update this path to your next step
   }
 
   const handleSkip = () => {
-    navigate('/languages') 
+    navigate('/languages') // Update this path to your next step
   }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-black text-white px-4">
       <div className="bg-[#16181C] rounded-xl w-full max-w-sm p-6 text-center shadow-lg">
-           <div className="text-center mb-6">
-          <div className="flex justify-center items-center mb-2">
-            <img src={NexxusLogo} alt="Nexxus Logo" className="w-20 h-20" />
-          </div>
-          </div>
         <div className="flex justify-center mb-6">
           <BellIcon className="w-10 h-10 text-blue-500" />
         </div>
