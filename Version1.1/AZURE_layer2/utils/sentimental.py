@@ -3,6 +3,10 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from langchain_openai import OpenAIEmbeddings  # Updated import
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, Any  # For type hinting
+import os
+from dotenv import load_dotenv, find_dotenv
+from AZURE_layer2.config.settings import settings
+import openai  # Ensure Azure OpenAI configuration is used
 
 # --- Setup that runs once on import ---
 try:
@@ -11,19 +15,64 @@ except nltk.downloader.DownloadError:
     print("Downloading VADER lexicon for sentimental.py...")
     nltk.download("vader_lexicon")
 
+# Use settings for environment variables
+AZURE_OPENAI_API_KEY_EMB = settings.AZURE_OPENAI_API_KEY
+AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID_EMB = os.getenv(
+    "AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID", ""
+)
+AZURE_OPENAI_API_VERSION_EMB = settings.AZURE_OPENAI_API_VERSION
+
+# Update os.environ assignments
+os.environ["OPENAI_API_TYPE"] = "azure"
+os.environ["AZURE_OPENAI_ENDPOINT"] = settings.AZURE_OPENAI_ENDPOINT
+os.environ["AZURE_OPENAI_API_KEY"] = AZURE_OPENAI_API_KEY_EMB
+
+# Debugging log to confirm environment variable loading
+print(f"AZURE_OPENAI_API_KEY_EMB: {AZURE_OPENAI_API_KEY_EMB}")
+print(
+    f"AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID_EMB: {AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID_EMB}"
+)
+
+# Ensure AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID_EMB is defined before use
+if not AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID_EMB:
+    print(
+        "Warning: AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID is not set. Embedding features will be skipped."
+    )
+else:
+    print("AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID is set.")
+
+# Define AZURE_OPENAI_ENDPOINT from settings
+AZURE_OPENAI_ENDPOINT = settings.AZURE_OPENAI_ENDPOINT
+
 # Initialize VADER and OpenAI Embeddings
 sia = SentimentIntensityAnalyzer()
 embeddings_analyzer = None  # Initialize to None
-try:
-    # This will use OPENAI_API_KEY from environment if available
-    # and if the openai package is installed.
-    embeddings_analyzer = OpenAIEmbeddings()
-    print("OpenAIEmbeddings initialized successfully in sentimental.py.")
-except Exception as e:
+
+if AZURE_OPENAI_API_KEY_EMB and AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID_EMB:
+    try:
+        # Configure for Azure OpenAI Embeddings
+        embeddings_analyzer = OpenAIEmbeddings(
+            azure_deployment=AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID_EMB,
+            model=AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID_EMB,  # Often good to set model to deployment name for Azure
+            azure_endpoint=AZURE_OPENAI_ENDPOINT,  # Updated to use AZURE_OPENAI_ENDPOINT directly
+            openai_api_key=AZURE_OPENAI_API_KEY_EMB,
+            openai_api_version=AZURE_OPENAI_API_VERSION_EMB,
+        )
+        print("OpenAIEmbeddings (Azure) initialized successfully in sentimental.py.")
+    except Exception as e:
+        print(
+            f"Warning: Could not initialize Azure OpenAIEmbeddings in sentimental.py: {e}. Embedding features will be skipped."
+        )
+else:
     print(
-        f"Warning: Could not initialize OpenAIEmbeddings in sentimental.py: {e}. Embedding features will be skipped."
+        "Warning: Azure OpenAI environment variables for embeddings (API_KEY, EMBEDDINGS_DEPLOYMENT_ID) not fully set in sentimental.py. OpenAI Embedding features will be skipped."
     )
 
+# Set Azure OpenAI configuration
+openai.api_key = settings.AZURE_OPENAI_API_KEY
+openai.api_base = settings.AZURE_OPENAI_ENDPOINT
+openai.api_type = "azure"
+openai.api_version = settings.AZURE_OPENAI_API_VERSION
 
 # Custom sentiment map (optional booster)
 custom_sentiments = {"fantabulous": 0.9, "horrific": -0.8, "meh": 0.0, "terrific": 0.9}
@@ -48,8 +97,11 @@ def analyze_sentiment_with_content(content: str) -> Dict[str, Any]:
     # Optionally, use OpenAI embeddings if available and desired for adjustment
     if embeddings_analyzer:
         try:
-            # vector = embeddings_analyzer.embed_query(content) # Example: if you wanted to use the vector
-            pass  # Placeholder for any logic involving embeddings
+            vector = embeddings_analyzer.embed_query(content)
+            # At this point, 'vector' contains the embedding.
+            # You could log its generation or use it for more advanced sentiment analysis/features.
+            # For now, we're just ensuring it's generated as per the request to "enable vectorization".
+            # print(f"Generated embedding vector for content (first 10 dims): {vector[:10]}") # Optional: for debugging
         except Exception as e:
             print(
                 f"Warning: Could not generate OpenAI embedding during sentiment analysis (in sentimental.py): {e}"

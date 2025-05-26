@@ -1,106 +1,141 @@
 import asyncio
 import logging
 from typing import List
-from langchain_openai import OpenAI  # Using langchain_openai
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from langchain_core.exceptions import LangChainException  # More specific exception
+from langchain_openai import (
+    AzureChatOpenAI,
+)  # Updated import to avoid deprecation warnings
+from langchain.prompts import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+    SystemMessagePromptTemplate,
+)
+from langchain.schema import BaseMessage  # For response handling
+from AZURE_layer2.config.settings import settings
+from httpx import Client  # Import Client for synchronous behavior
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Placeholder for your Langchain model and prompt setup
+# Azure OpenAI Configuration
+AZURE_OPENAI_API_KEY = settings.AZURE_OPENAI_API_KEY
+AZURE_OPENAI_ENDPOINT = settings.AZURE_OPENAI_ENDPOINT
+AZURE_OPENAI_CHAT_DEPLOYMENT_ID = settings.AZURE_OPENAI_CHAT_DEPLOYMENT_ID
+AZURE_OPENAI_API_VERSION = settings.AZURE_OPENAI_API_VERSION
+
+# Initialize LangChain AzureChatOpenAI model
 llm = None
 suggestion_chain = None
+http_client = None  # Define it outside the try block for potential cleanup
 
 try:
-    llm = OpenAI(temperature=0.7)  # Ensure OPENAI_API_KEY is in env
-    # Define the prompt template
-    # Adding explicit formatting instructions for robustness
-    prompt_template_str = """Given the following text which might be neutral or negative: '{original_text}', please provide 2-3 alternative, more positive or constructive phrasings.
-Provide each suggestion on a new line, prefixed with a hyphen (-).
-Example:
-- Suggestion 1
-- Suggestion 2
-- Suggestion 3
+    if not (
+        AZURE_OPENAI_API_KEY
+        and AZURE_OPENAI_ENDPOINT
+        and AZURE_OPENAI_CHAT_DEPLOYMENT_ID
+    ):
+        logger.warning(
+            "Azure OpenAI environment variables (API_KEY, ENDPOINT, CHAT_DEPLOYMENT_ID) "
+            "not fully set. LangChain suggester will use placeholder suggestions."
+        )
+    else:
+        # Create a httpx.Client for synchronous behavior
+        http_client = Client()
 
-Suggestions:"""
-    prompt_template = PromptTemplate(
-        input_variables=["original_text"], template=prompt_template_str
-    )
-    suggestion_chain = LLMChain(llm=llm, prompt=prompt_template)
-    logger.info("Langchain suggester initialized successfully.")
+        # Initialize the AzureChatOpenAI model
+        llm = AzureChatOpenAI(
+            azure_endpoint=AZURE_OPENAI_ENDPOINT,  # Updated to use azure_endpoint
+            azure_deployment=AZURE_OPENAI_CHAT_DEPLOYMENT_ID,  # Updated to use azure_deployment
+            openai_api_key=AZURE_OPENAI_API_KEY,
+            openai_api_version=AZURE_OPENAI_API_VERSION,
+            temperature=0.7,
+            openai_proxy=None,  # Explicitly ensure no proxy is configured via langchain's old mechanism
+            http_client=http_client,  # Pass the httpx client
+        )
+
+        # Define the prompt template
+        system_message_prompt = SystemMessagePromptTemplate.from_template(
+            "You are an expert in communication. Your task is to rephrase potentially neutral or negative text "
+            "into 2-3 alternative, more positive or constructive phrasings. "
+            "Provide each suggestion on a new line, prefixed with a hyphen (-). "
+            "Do NOT use any numbering or bullet points other than the hyphen prefix. "
+            "Do NOT use any symbols like * or _ to make text bold or italic. "
+            "Do NOT use any other special formatting.\n"
+            "Example input: 'This is not good.'\n"
+            "Example output:\n"
+            "- Perhaps we can explore other options.\n"
+            "- Let's see how we can improve this."
+        )
+        human_message_prompt = HumanMessagePromptTemplate.from_template(
+            "{original_text}"
+        )
+        prompt_template = ChatPromptTemplate.from_messages(
+            [system_message_prompt, human_message_prompt]
+        )
+
+        # Combine the prompt template with the LLM
+        suggestion_chain = prompt_template | llm
+        logger.info(
+            f"LangChain suggester initialized successfully for Azure with deployment: {AZURE_OPENAI_CHAT_DEPLOYMENT_ID}."
+        )
+
 except Exception as e:
-    # Catching a broad Exception for initialization issues (e.g., missing key, network)
     logger.warning(
-        f"Could not initialize Langchain suggester: {e}. Suggestions will be placeholders.",
+        f"Could not initialize LangChain suggester (AzureChatOpenAI): {e}. Suggestions will be placeholders.",
         exc_info=True,
     )
-    llm = None  # Ensure llm is None if initialization failed
-    suggestion_chain = None  # Ensure chain is None if initialization failed
+    llm = None
+    suggestion_chain = None
 
 
 async def get_langchain_suggestions(original_content: str) -> List[str]:
     """
-    Interacts with Langchain to get alternative suggestions for the given content.
+    Interacts with LangChain to get alternative suggestions for the given content.
     """
     if suggestion_chain:
         logger.info(
-            f"Langchain: Received content for suggestions: '{original_content[:100]}...'"
-        )  # Log truncated content
-        # Use arun for async execution if your LLM/chain supports it.
-        # For the standard LLMChain with OpenAI, run might be synchronous under the hood
-        # but we can call it in a way that doesn't block the event loop for too long
-        # or use asyncio.to_thread for truly non-blocking if needed for very long calls.
-        # For simplicity, let's assume `arun` is available or `run` is acceptable for now.
+            f"LangChain: Received content for suggestions: '{original_content[:100]}...'"
+        )
         try:
-            # Use arun for asynchronous execution
-            response = await suggestion_chain.arun(original_text=original_content)
+            response_obj = await suggestion_chain.ainvoke(
+                {"original_text": original_content}
+            )
+            response = response_obj.content
+            logger.info(f"LangChain response: {response}")
 
-            # Parse the response - expect lines starting with '-'
-            # Split by newline, strip whitespace, filter lines starting with '-', remove '-' prefix
+            # Parse suggestions from the response
             suggestions = [
-                s.strip()[1:].strip()  # Remove hyphen and leading/trailing whitespace
-                for s in response.split("\n")  # s is the loop variable
-                if s.strip().startswith("-")  # Use s here
+                s.strip()[1:].strip()
+                for s in response.split("\n")
+                if s.strip().startswith("-")
             ]
 
-            if (
-                not suggestions
-            ):  # Fallback if parsing fails or LLM returns unexpected format
+            if not suggestions:
                 logger.warning(
-                    f"Langchain returned unexpected response format or no suggestions: '{response}'"
+                    f"LangChain returned unexpected response format or no suggestions: '{response}'"
                 )
                 suggestions = [
-                    f"Could not generate specific suggestions for: '{original_content[:30]}...'"
+                    f"Fallback: Could not parse suggestions for: '{original_content[:30]}...'"
                 ]
 
-        except LangChainException as e:
-            logger.error(f"Langchain chain execution failed: {e}", exc_info=True)
-            suggestions = [
-                f"Error generating suggestions (Langchain error) for: '{original_content[:30]}...'"
-            ]
         except Exception as e:
-            # Catch any other unexpected errors during the async call
             logger.error(
-                f"Unexpected error during Langchain suggestion generation: {e}",
-                exc_info=True,
+                f"Error during LangChain suggestion generation: {e}", exc_info=True
             )
             suggestions = [
-                f"Error generating suggestions (unexpected error) for: '{original_content[:30]}...'"
+                f"Error generating suggestions for: '{original_content[:30]}...'"
             ]
     else:
         logger.warning(
-            "Langchain suggester not initialized. Returning placeholder suggestions."
+            "LangChain suggester not initialized. Returning placeholder suggestions."
         )
-        await asyncio.sleep(0.1)  # Simulate async work if falling back
+        await asyncio.sleep(0.1)
         suggestions = [
-            f"Placeholder suggestion 1 (Langchain not init): '{original_content[:30]}...'",
-            f"Placeholder suggestion 2 (Langchain not init): '{original_content[:30]}...'",
+            f"Placeholder suggestion 1: '{original_content[:30]}...'",
+            f"Placeholder suggestion 2: '{original_content[:30]}...'",
         ]
 
-    logger.info(f"Langchain: Returning suggestions: {suggestions}")
+    logger.info(f"LangChain: Returning suggestions: {suggestions}")
     return suggestions
 
 

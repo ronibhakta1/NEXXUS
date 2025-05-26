@@ -8,8 +8,10 @@ def get_echo_weaviate_schema():
     return {
         "class": "Echo",
         "description": "An echo post with its content and metadata",
-        "vectorizer": "none",  # Temporarily disable vectorization
-        # moduleConfig for text2vec-openai is removed as vectorizer is "none"
+        # Vectorizer and moduleConfig removed to skip automatic vectorization by Weaviate.
+        # If you re-enable vectorization later, ensure Weaviate's environment variables
+        # (OPENAI_APIKEY, AZURE_RESOURCE_NAME, AZURE_DEPLOYMENT_ID for embeddings)
+        # are correctly set in docker-compose.yaml for text2vec-openai with Azure.
         "properties": [
             {
                 "name": "content",
@@ -25,7 +27,9 @@ def get_echo_weaviate_schema():
                 "name": "username",
                 "dataType": ["text"],
                 "description": "The username of the author",
-                # moduleConfig for skipping vectorization is not needed if class vectorizer is "none"
+                "moduleConfig": {  # Explicitly skip vectorizing username
+                    "text2vec-openai": {"skip": True, "vectorizePropertyName": False}
+                },
             },
             {
                 "name": "timestamp",
@@ -59,7 +63,14 @@ def ensure_weaviate_schema(client: weaviate.WeaviateClient):  # Type hint for v4
     class_exists = client.collections.exists(class_name)
 
     if not class_exists:
-        client.collections.create_from_dict(echo_class_obj)  # v4 method
-        print(f"Class '{class_name}' created in Weaviate.")
+        try:
+            client.collections.create_from_dict(echo_class_obj)  # v4 method
+            print(f"Class '{class_name}' created in Weaviate.")
+        except Exception as e:
+            print(f"Failed to create class '{class_name}': {e}")
+            print(
+                "Please ensure your Weaviate instance is configured with the 'text2vec-openai' module and a valid OpenAI API key."
+            )
+            # Potentially re-raise or handle more gracefully
     else:
         print(f"Class '{class_name}' already exists in Weaviate.")
