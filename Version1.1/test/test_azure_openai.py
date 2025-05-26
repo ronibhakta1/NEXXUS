@@ -1,13 +1,15 @@
+import os
 import openai
 
-openai.api_key = "8FCgmct0IpMghhnjqtp2356eV9UvAyDw9qWIokeCMLec5fKNny0BJQQJ99BEAC77bzfXJ3w3AAAAACOGCSgs"
-openai.api_base = "https://roni-masjfh4x-southindia.openai.azure.com/"
+# Load API configuration from environment variables
+openai.api_key = os.getenv("AZURE_OPENAI_API_KEY")
+openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
 openai.api_type = "azure"
-openai.api_version = "2024-12-01-preview"
+openai.api_version = os.getenv("AZURE_OPENAI_API_VERSION")
 
 try:
     response = openai.ChatCompletion.create(
-        deployment_id="gpt-4o",
+        deployment_id=os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_ID"),
         messages=[{"role": "user", "content": "Hello, Azure OpenAI!"}],
     )
     print("Test Successful:", response)
