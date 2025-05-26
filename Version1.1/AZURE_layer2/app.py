@@ -5,86 +5,93 @@ from contextlib import asynccontextmanager
 from fastapi.responses import RedirectResponse
 import os
 import weaviate
-import time  # Import the time module for delays
-from AZURE_layer2.schemas.weaviate_schema import (
-    ensure_weaviate_schema,
-)  # Import schema function
+from weaviate.connect import ConnectionParams  # Corrected import for v4
+import time
+from AZURE_layer2.schemas.weaviate_schema import ensure_weaviate_schema  # Import schema function
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan event handler for startup and shutdown"""
-    app.weaviate_client = None  # Initialize attribute
-    try:
-        weaviate_url = os.getenv("WEAVIATE_URL")
-        openai_api_key = os.getenv("OPENAI_API_KEY")
+    app.weaviate_client = None  # Initialize as None
+    temp_client = None  # Temporary client variable for the loop
 
-        if not weaviate_url:
-            raise ValueError("WEAVIATE_URL environment variable not set for FastAPI.")
-        # OpenAI key is optional here if Weaviate is configured globally,
-        # but good to check if module is expected to use it via FastAPI headers.
-        if not openai_api_key:
-            print(
-                "Warning: OPENAI_API_KEY not set for FastAPI, Weaviate text2vec-openai module might fail if not configured globally in Weaviate."
-            )
+    weaviate_url = os.getenv("WEAVIATE_URL")
 
-            # v4 client initialization
-        http_host_extracted = weaviate_url.replace("http://", "").split(":")[0]
-
+    if not weaviate_url:
+        print(
+            "CRITICAL: WEAVIATE_URL environment variable not set. Weaviate client cannot be initialized."
+        )
+        # Allow app to start, but Weaviate-dependent endpoints will fail.
+    else:
         max_retries = 5
         retry_delay_seconds = 5
-        client = None  # Initialize client to None
 
         for attempt in range(max_retries):
             try:
                 print(
-                    f"Attempting to connect to Weaviate (attempt {attempt + 1}/{max_retries})..."
+                    f"Attempting to connect to Weaviate and ensure schema (attempt {attempt + 1}/{max_retries})..."
                 )
-                client = weaviate.connect_to_custom(
-                    http_host=http_host_extracted,
-                    http_port=int(weaviate_url.split(":")[-1]),
-                    http_secure=False,
-                    grpc_host=http_host_extracted,
-                    grpc_port=50051,
-                    grpc_secure=False,
-                    headers={"X-OpenAI-Api-Key": openai_api_key},
+                # v4 client initialization using ConnectionParams.from_url
+                temp_client = weaviate.WeaviateClient(
+                    connection_params=ConnectionParams.from_url(
+                        url=weaviate_url,
+                        grpc_port=int(
+                            os.getenv("WEAVIATE_GRPC_PORT", "50051")
+                        ),  # Ensure gRPC port is integer
+                    )
                 )
-                if client.is_live():
-                    app.weaviate_client = client
+                temp_client.connect()  # Explicitly connect for v4
+
+                if temp_client.is_ready():  # v4 readiness check
                     print(f"Successfully connected to Weaviate at {weaviate_url}.")
+                    # Attempt to ensure schema
+                    ensure_weaviate_schema(temp_client)
+                    print("Weaviate schema ensured.")
+                    app.weaviate_client = temp_client  # Assign to app state only if ALL steps succeed
                     break  # Exit retry loop on success
                 else:
-                    # This case might not be hit if is_live() itself raises on connection failure
                     print(
-                        f"Weaviate at {weaviate_url} is not live. Retrying in {retry_delay_seconds}s..."
+                        f"Connection attempt {attempt + 1} successful, but Weaviate not ready."
                     )
-                    if client:  # Ensure client object exists before trying to close
-                        client.close()
-            except Exception as connect_e:
-                print(f"Connection attempt {attempt + 1} failed: {connect_e}")
-                if client:  # Ensure client object exists before trying to close
-                    client.close()  # Close potentially partially open client
+                    if temp_client:
+                        temp_client.close()
+
+            except Exception as e_attempt:
+                print(f"Attempt {attempt + 1} failed: {e_attempt}")
+                if temp_client:
+                    try:
+                        temp_client.close()
+                    except Exception:
+                        pass  # Ignore errors during close on failed attempt
+                temp_client = None  # Reset temp client
+
+            if app.weaviate_client:  # If successful in the try block, we would have broken
+                break
+
+            if attempt < max_retries - 1:  # If not the last attempt and not successful
+                print(f"Retrying in {retry_delay_seconds} seconds...")
+                time.sleep(retry_delay_seconds)
+            else:  # Last attempt failed
                 if attempt + 1 == max_retries:
-                    # If all retries fail, app.weaviate_client will remain None
-                    # and the outer except block will catch the final state.
-                    raise ConnectionError(
-                        f"Failed to connect to Weaviate at {weaviate_url} after {max_retries} attempts. Last error: {connect_e}"
+                    print(
+                        f"CRITICAL: Failed to connect to Weaviate and/or ensure schema after {max_retries} attempts."
                     )
+                    # app.weaviate_client remains None
 
-            time.sleep(retry_delay_seconds)
+    if not app.weaviate_client and weaviate_url:  # Log final status if URL was provided but client failed
+        print(
+            "CRITICAL: Weaviate client could not be initialized. API endpoints requiring Weaviate will likely fail."
+        )
 
-        if app.weaviate_client:  # Only try to ensure schema if client is connected
-            # Ensure Weaviate schema is created
-            ensure_weaviate_schema(app.weaviate_client)
-
-    except Exception as e:
-        print(f"Error during Weaviate client initialization or schema creation: {e}")
-        app.weaviate_client = None  # Ensure client is None if setup failed
     yield
     # Shutdown logic (if needed)
     if app.weaviate_client:
-        app.weaviate_client.close()  # Close the client connection for v4
-        print("Weaviate client connection closed.")
+        try:
+            app.weaviate_client.close()
+            print("Weaviate client connection closed.")
+        except Exception as e_close:
+            print(f"Error closing Weaviate client: {e_close}")
 
 
 app = FastAPI(

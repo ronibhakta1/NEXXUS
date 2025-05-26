@@ -7,6 +7,7 @@ openai
 nltk
 weaviate-client
 python-dotenv
-langchain # Core Langchain
+langchain
 langchain-openai
-langchain-community # If you need specific community integrations, otherwise optional
+langchain-community
+httpx
