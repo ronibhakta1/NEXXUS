@@ -34,7 +34,7 @@ const Languages: React.FC = () => {
 
     setError('');
     console.log('Selected Languages:', selectedLanguages);
-    navigate('/signupLatest'); 
+    navigate('/signinLatest'); 
   };
 
   return (
