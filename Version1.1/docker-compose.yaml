@@ -1,32 +1,46 @@
 services:
   weaviate:
-    image: semitechnologies/weaviate:1.25.3
+    image: cr.weaviate.io/semitechnologies/weaviate:1.25.3
     restart: always
+    container_name: nexxus-db
     ports:
       - "8080:8080"
     environment:
       QUERY_DEFAULTS_LIMIT: 25
       AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
-      DEFAULT_VECTORIZER_MODULE: 'text2vec-openai'
-      ENABLE_MODULES: 'text2vec-openai'
-      OPENAI_APIKEY: ${OPENAI_API_KEY}  # Pulls from your env/.env
+      DEFAULT_VECTORIZER_MODULE: 'none' # No default vectorizer
+      ENABLE_MODULES: '' # Disable all modules, or list others if needed but exclude text2vec-openai
+      # The following Azure OpenAI specific variables are not needed by Weaviate
+      # if text2vec-openai module is disabled.
+      # OPENAI_APIKEY: ${AZURE_OPENAI_API_KEY}
+      # AZURE_RESOURCE_NAME: ${AZURE_OPENAI_RESOURCE_NAME}
+      # AZURE_DEPLOYMENT_ID: ${AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID}
       CLUSTER_HOSTNAME: 'node1'
+      CLUSTER_GOSSIP_BIND_PORT: '7100'
+      CLUSTER_DATA_BIND_PORT: '7101'
+      
     volumes:
       - weaviate_data:/var/lib/weaviate
+    healthcheck: # Updated healthcheck to use curl instead of wget
+        test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/v1/.well-known/live || exit 1"]
+        interval: 5s
+        timeout: 10s
+        retries: 5
+        start_period: 10s # Increased start_period for more robust startup
 
   fastapi:
     build:
       context: .
-      dockerfile: Dockerfile
-    restart: always
+      dockerfile: docker/Dockerfile
+    container_name: nexxus-api
     ports:
-      - "8000:8000"
-    environment:
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      WEAVIATE_URL: http://weaviate:8080
+      - "8000:80"
     depends_on:
-      - weaviate
+      weaviate:
+        condition: service_healthy
+    env_file: # Load environment variables from .env file
+      - .env
 
 volumes:
   weaviate_data:

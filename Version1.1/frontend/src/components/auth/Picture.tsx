@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { CameraIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import NexxusLogo from '@/assets/nexxus.svg'
 
 const ProfilePicture: React.FC = () => {
   const [preview, setPreview] = useState<string | null>(null)
@@ -31,11 +30,6 @@ const ProfilePicture: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white px-4">
       <div className="bg-[#16181C] rounded-2xl w-full max-w-md p-6 shadow-lg">
         <div className="text-center">
-           <div className="text-center mb-6">
-              <div className="flex justify-center items-center mb-2">
-            <img src={NexxusLogo} alt="Nexxus Logo" className="w-20 h-20" />
-               </div>
-            </div>
           <h2 className="text-xl font-bold mb-1">Pick a profile picture</h2>
           <p className="text-sm text-gray-400 mb-6">
             Have a favorite selfie? Upload it now.

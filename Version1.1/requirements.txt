@@ -3,6 +3,11 @@ uvicorn[standard]
 sqlalchemy
 psycopg2-binary
 pydantic
-langchain
 openai
 nltk
+weaviate-client
+python-dotenv
+langchain
+langchain-openai
+langchain-community
+httpx
