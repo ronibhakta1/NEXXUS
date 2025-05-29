@@ -33,7 +33,7 @@ const Languages: React.FC = () => {
 
     setError('');
     console.log('Selected Languages:', selectedLanguages);
-    navigate('/signupLatest'); // Final page navigation
+    navigate('/signinLatest'); 
   };
 
   return (

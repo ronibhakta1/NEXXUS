@@ -142,7 +142,6 @@ const SignupForm: React.FC = () => {
 
         <p className="text-sm text-gray-400 mb-2">
           Date of Birth<br />
-          <span className="text-xs">This will not be shown publicly...</span>
         </p>
 
         <div className="flex gap-2 mb-6">
