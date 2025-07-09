@@ -11,11 +11,6 @@ services:
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
       DEFAULT_VECTORIZER_MODULE: 'none' # No default vectorizer
       ENABLE_MODULES: '' # Disable all modules, or list others if needed but exclude text2vec-openai
-      # The following Azure OpenAI specific variables are not needed by Weaviate
-      # if text2vec-openai module is disabled.
-      # OPENAI_APIKEY: ${AZURE_OPENAI_API_KEY}
-      # AZURE_RESOURCE_NAME: ${AZURE_OPENAI_RESOURCE_NAME}
-      # AZURE_DEPLOYMENT_ID: ${AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_ID}
       CLUSTER_HOSTNAME: 'node1'
       CLUSTER_GOSSIP_BIND_PORT: '7100'
       CLUSTER_DATA_BIND_PORT: '7101'

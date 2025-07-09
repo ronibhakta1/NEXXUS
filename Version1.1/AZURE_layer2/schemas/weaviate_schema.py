@@ -9,8 +9,8 @@ def get_echo_weaviate_schema():
         "class": "Echo",
         "description": "An echo post with its content and metadata",
         # Vectorizer and moduleConfig removed to skip automatic vectorization by Weaviate.
-        # If you re-enable vectorization later, ensure Weaviate's environment variables
-        # (OPENAI_APIKEY, AZURE_RESOURCE_NAME, AZURE_DEPLOYMENT_ID for embeddings)
+        # If we re-enable vectorization later, ensure Weaviate's environment variables
+        # (AZURE_OPENAI_APIKEY, AZURE_RESOURCE_NAME, AZURE_DEPLOYMENT_ID for embeddings)
         # are correctly set in docker-compose.yaml for text2vec-openai with Azure.
         "properties": [
             {

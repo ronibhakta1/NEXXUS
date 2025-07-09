@@ -7,7 +7,9 @@ import os
 import weaviate
 from weaviate.connect import ConnectionParams  # Corrected import for v4
 import time
-from AZURE_layer2.schemas.weaviate_schema import ensure_weaviate_schema  # Import schema function
+from AZURE_layer2.schemas.weaviate_schema import (
+    ensure_weaviate_schema,
+)  # Import schema function
 
 
 @asynccontextmanager
@@ -48,7 +50,9 @@ async def lifespan(app: FastAPI):
                     # Attempt to ensure schema
                     ensure_weaviate_schema(temp_client)
                     print("Weaviate schema ensured.")
-                    app.weaviate_client = temp_client  # Assign to app state only if ALL steps succeed
+                    app.weaviate_client = (
+                        temp_client  # Assigns to app state only if ALL steps succeed
+                    )
                     break  # Exit retry loop on success
                 else:
                     print(
@@ -66,7 +70,9 @@ async def lifespan(app: FastAPI):
                         pass  # Ignore errors during close on failed attempt
                 temp_client = None  # Reset temp client
 
-            if app.weaviate_client:  # If successful in the try block, we would have broken
+            if (
+                app.weaviate_client
+            ):  # If successful in the try block, we would have broken
                 break
 
             if attempt < max_retries - 1:  # If not the last attempt and not successful
@@ -79,7 +85,9 @@ async def lifespan(app: FastAPI):
                     )
                     # app.weaviate_client remains None
 
-    if not app.weaviate_client and weaviate_url:  # Log final status if URL was provided but client failed
+    if (
+        not app.weaviate_client and weaviate_url
+    ):  # Log final status if URL was provided but client failed
         print(
             "CRITICAL: Weaviate client could not be initialized. API endpoints requiring Weaviate will likely fail."
         )

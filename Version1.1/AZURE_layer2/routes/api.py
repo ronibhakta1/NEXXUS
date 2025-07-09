@@ -40,7 +40,7 @@ async def echo_endpoint(
     request: Request,
     echo_data: EchoCreate,
     background_tasks: BackgroundTasks,  # Added BackgroundTasks dependency
-):  # Use Pydantic model for validation
+):  # Used Pydantic model for validation
     """
     Receives echo data, validates it, stores it in Weaviate, and returns a response.
     """
@@ -83,7 +83,7 @@ async def echo_endpoint(
             weaviate_flag_data_payload["extraData"] = extra_data_base64_str
 
     weaviate_object["flagData"] = (
-        weaviate_flag_data_payload  # Assign the prepared flagData
+        weaviate_flag_data_payload  # Assigns the prepared flagData
     )
 
     try:
